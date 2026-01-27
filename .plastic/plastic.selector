@@ -1,0 +1,3 @@
+repository "DoomClone/DoomClone@18966716026124@cloud"
+  path "/"
+    smartbranch "/main"
