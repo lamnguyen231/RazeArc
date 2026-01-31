@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, -85f, 85f);
 
         cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        transform.Rotate(Vector3.up * mouseX);
+        bodyController.transform.Rotate(Vector3.up * mouseX);
     }
 
     void HandleMovement()
