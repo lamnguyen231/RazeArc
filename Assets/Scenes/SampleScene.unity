@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 52589875}
   - component: {fileID: 52589874}
   - component: {fileID: 52589878}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -424,7 +424,7 @@ GameObject:
   - component: {fileID: 598220237}
   - component: {fileID: 598220239}
   - component: {fileID: 598220238}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PlayerGraphics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -677,7 +677,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PlayerCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -770,8 +770,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d225afec75bbd4d4ab254838d3803995, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fireRate: 0.3
   damage: 25
+  fireRate: 0.3
+  range: 100
+  firePoint: {fileID: 1660057879}
+  cameraRecoil: {fileID: 1660057886}
+  shootMask:
+    serializedVersion: 2
+    m_Bits: 384
 --- !u!1 &1181194053
 GameObject:
   m_ObjectHideFlags: 0
@@ -781,8 +787,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1181194054}
-  - component: {fileID: 1181194055}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -805,30 +810,6 @@ Transform:
   - {fileID: 1660057879}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1181194055
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1181194053}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1498ae0ee42dc7f43af1d24f9a027370, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraTransform: {fileID: 963194228}
-  graphicsTransform: {fileID: 598220237}
-  bodyController: {fileID: 1660057883}
-  cameraOffsetY: -0.2
-  mouseSensitivity: 150
-  moveSpeed: 6
-  gravity: -20
-  jumpForce: 8
-  maxJumps: 2
-  standingHeight: 2
-  crouchingHeight: 1
-  crouchSpeed: 3
 --- !u!1 &1271742872
 GameObject:
   m_ObjectHideFlags: 0
@@ -841,7 +822,7 @@ GameObject:
   - component: {fileID: 1271742875}
   - component: {fileID: 1271742874}
   - component: {fileID: 1271742873}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -946,7 +927,7 @@ GameObject:
   - component: {fileID: 1524094980}
   - component: {fileID: 1524094979}
   - component: {fileID: 1524094978}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1051,7 +1032,10 @@ GameObject:
   - component: {fileID: 1660057879}
   - component: {fileID: 1660057880}
   - component: {fileID: 1660057883}
-  m_Layer: 0
+  - component: {fileID: 1660057884}
+  - component: {fileID: 1660057885}
+  - component: {fileID: 1660057886}
+  m_Layer: 6
   m_Name: PlayerBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1124,6 +1108,60 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1660057884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660057878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1498ae0ee42dc7f43af1d24f9a027370, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTransform: {fileID: 963194228}
+  graphicsTransform: {fileID: 598220237}
+  bodyController: {fileID: 1660057883}
+  cameraOffsetY: -0.2
+  moveSpeed: 6
+  gravity: -20
+  jumpForce: 8
+  maxJumps: 2
+  standingHeight: 2
+  crouchingHeight: 1
+  crouchSpeed: 3
+--- !u!114 &1660057885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660057878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8d171b157ee4c24696fef5a6ad512da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTransform: {fileID: 963194228}
+  mouseSensitivity: 150
+  maxPitch: 85
+--- !u!114 &1660057886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660057878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b612ea32b91bc6849b2f01d480a72c02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTransform: {fileID: 963194228}
+  playerLook: {fileID: 1660057885}
+  recoilKick: -50
+  recoilReturnSpeed: 10
 --- !u!1001 &8134309917563090884
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1180,6 +1218,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wall
       objectReference: {fileID: 0}
+    - target: {fileID: 7221903310385215605, guid: bf1c67cabc27d6442a54a9607aac0ae9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1191,9 +1233,9 @@ SceneRoots:
   m_Roots:
   - {fileID: 705507995}
   - {fileID: 132965823}
+  - {fileID: 435626137}
   - {fileID: 1181194054}
   - {fileID: 1524094981}
   - {fileID: 8134309917563090884}
   - {fileID: 1271742876}
   - {fileID: 52589877}
-  - {fileID: 435626137}
