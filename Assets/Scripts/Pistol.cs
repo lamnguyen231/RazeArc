@@ -9,14 +9,14 @@ public class Pistol : WeaponBase
     protected override void Fire()
     {
         Debug.Log("Pistol Fired");
+        Camera camera = Camera.main;
+        Ray ray = camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
 
         RaycastHit hit;
-        Vector3 origin = firePoint.position;
-        Vector3 direction = firePoint.forward;
+        Debug.DrawRay(ray.origin, ray.direction * range, Color.red, 0.5f);
 
-        Debug.DrawRay(origin, direction * range, Color.red, 0.5f);
 
-        if (Physics.Raycast(origin, direction, out hit, range, shootMask))
+        if (Physics.Raycast(ray, out hit, range, shootMask))
         {
             if (hit.collider.TryGetComponent<IDamageable>(out var damageable))
             {
