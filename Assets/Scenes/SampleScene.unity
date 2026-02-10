@@ -773,6 +773,8 @@ MonoBehaviour:
   damage: 25
   fireRate: 0.3
   range: 100
+  recoilMin: {x: -0.5, y: -10, z: 0}
+  recoilMax: {x: 0.5, y: -15, z: 0}
   firePoint: {fileID: 1660057879}
   cameraRecoil: {fileID: 1660057886}
   shootMask:
@@ -1160,8 +1162,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraTransform: {fileID: 963194228}
   playerLook: {fileID: 1660057885}
-  recoilKick: -50
-  recoilReturnSpeed: 10
+  returnSpeed: 10
+  snappiness: 20
 --- !u!1001 &8134309917563090884
 PrefabInstance:
   m_ObjectHideFlags: 0
