@@ -12,10 +12,6 @@ public class PlayerMovement : MonoBehaviour
     [Header("Settings")]
     public float cameraOffsetY = -0.35f;
 
-    [Header("Mouse Look")]
-    public float mouseSensitivity = 150f;
-    float xRotation = 0f;
-
     [Header("Movement")]
     public float moveSpeed = 6f;
     public float gravity = -20f;
@@ -42,20 +38,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HandleMouseLook();
         HandleMovement();
-    }
-
-    void HandleMouseLook()
-    {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
-
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -85f, 85f);
-
-        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        bodyController.transform.Rotate(Vector3.up * mouseX);
     }
 
     void HandleMovement()
