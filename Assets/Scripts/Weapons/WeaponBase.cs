@@ -29,7 +29,11 @@ public abstract class WeaponBase : MonoBehaviour
     protected bool reloadCancelledThisFrame = false;
     protected Coroutine reloadCoroutine;
 
-    void Start()
+    protected virtual void Awake()
+    {
+    }
+
+    protected virtual void Start()
     {
         currentAmmo = magazineSize;
     }

@@ -738,11 +738,66 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6331449552593355608, guid: 3409ff71a89fc9f428e62ddbe9b43634, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1253627082067099719, guid: 3409ff71a89fc9f428e62ddbe9b43634, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1555841387}
   m_SourcePrefab: {fileID: 100100000, guid: 3409ff71a89fc9f428e62ddbe9b43634, type: 3}
+--- !u!4 &1220741126 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2306311037138602846, guid: 3409ff71a89fc9f428e62ddbe9b43634, type: 3}
+  m_PrefabInstance: {fileID: 1168350193}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1220741127 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5041853586472463052, guid: 3409ff71a89fc9f428e62ddbe9b43634, type: 3}
+  m_PrefabInstance: {fileID: 1168350193}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b612ea32b91bc6849b2f01d480a72c02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &1555841383 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1253627082067099719, guid: 3409ff71a89fc9f428e62ddbe9b43634, type: 3}
+  m_PrefabInstance: {fileID: 1168350193}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1555841387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1555841383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a58668cb8e18f3f4c8a2868a0607ab47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 25
+  fireRate: 0.5
+  range: 100
+  magazineSize: 12
+  reserveAmmo: 36
+  reloadTime: 1.5
+  recoilMin: {x: -0.5, y: -50, z: 0}
+  recoilMax: {x: 0.5, y: -60, z: 0}
+  firePoint: {fileID: 1220741126}
+  cameraRecoil: {fileID: 1220741127}
+  pelletCount: 10
+  spreadAngle: 5
+  shootMask:
+    serializedVersion: 2
+    m_Bits: 384
 --- !u!1 &1898625394
 GameObject:
   m_ObjectHideFlags: 0
