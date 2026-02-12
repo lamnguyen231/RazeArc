@@ -6,6 +6,23 @@ public class Pistol : WeaponBase
 {
     public LayerMask shootMask;
 
+    protected override void Awake()
+    {
+        base.Awake();
+
+        // Weapon Identity
+        damage = 25f;
+        fireRate = 0.4f;
+        range = 100f;
+
+        magazineSize = 12;
+        reserveAmmo = 36;
+        reloadTime = 1.5f;
+
+        recoilMin = new Vector3(-0.5f, -15f, 0f);
+        recoilMax = new Vector3(0.5f, -20f, 0f);
+    }
+
     protected override void Fire()
     {
         Debug.Log("Pistol Fired");

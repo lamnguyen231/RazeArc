@@ -15,8 +15,8 @@ public abstract class WeaponBase : MonoBehaviour
     public float reloadTime = 1.5f;
 
     [Header("Recoil Settings")]
-    public Vector3 recoilMin = new Vector3(-0.5f, 1f, 0f);
-    public Vector3 recoilMax = new Vector3(0.5f, 2f, 0f);
+    public Vector3 recoilMin = new Vector3(-0.5f, -15f, 0f);
+    public Vector3 recoilMax = new Vector3(0.5f, -20f, 0f);
 
     [Header("References")]
     public Transform firePoint;
