@@ -145,7 +145,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 2346394481788175055}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 503b0dea329d94445b0f3f4a9910c1f0, type: 3}
+  m_Script: {fileID: 11500000, guid: 444cfa21ae219864495acbeb92d2f732, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isKeycard: 1
   keyColor: Blue

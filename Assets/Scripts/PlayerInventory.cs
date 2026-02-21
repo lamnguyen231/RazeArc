@@ -12,6 +12,13 @@ public class PlayerInventory : MonoBehaviour
     public bool hasBlueKey = false;
     public bool hasGreenKey = false;
 
+    public void PickUpKey(string keyColor)
+    {
+        if (keyColor == "Red") hasRedKey = true;
+        else if (keyColor == "Blue") hasBlueKey = true;
+        else if (keyColor == "Green") hasGreenKey = true;
+    }
+
     // Start is called before the first frame update
     void Start()
     {

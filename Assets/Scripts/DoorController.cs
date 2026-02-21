@@ -8,38 +8,49 @@ public class DoorController : MonoBehaviour
     public GameObject doorMesh;
 
     [Header("Open Condition")]
-    public bool isNormalDoor = false; //Open whenever entering the trigger zone
+    public bool isNormalDoor = false;
     public string requiredKey = "None";
     public bool isRoomCleared = false;
     [Tooltip("Drag the enemies for this specific room into this list")]
     public GameObject[] roomEnemies;
+
+    [Header("Close Settings")]
+    public bool autoClose = true;
 
     [Header("Animation Settings")]
     public float slideHeight = 5f;
     public float slideSpeed = 5f;
 
     private bool isOpening = false;
+    private bool isClosing = false;
     private Vector3 targetPosition;
+    private Vector3 startPosition;
 
+    // 1. Remember where the floor is when the game starts
+    void Start()
+    {
+        if (doorMesh != null)
+        {
+            startPosition = doorMesh.transform.position;
+        }
+    }
+
+    // 2. Open when entering the box
     public void OnTriggerEnter(Collider other)
     {
-        Debug.Log("SOMETHING TOUCHED THE DOOR: " + other.gameObject.name);
-        Debug.Log("ITS TAG IS: " + other.gameObject.tag);
         if (other.CompareTag("Player"))
         {
             CheckDoorConditions(other.gameObject);
         }
     }
 
-    private void OpenDoor()
+    // 3. Close when leaving the box
+    public void OnTriggerExit(Collider other)
     {
-        Debug.Log("Opening Door");
-
-        targetPosition = doorMesh.transform.position + new Vector3(0, slideHeight, 0);
-
-        isOpening = true;
-
-        GetComponent<Collider>().enabled = false;
+        if (other.CompareTag("Player") && autoClose)
+        {
+            CloseDoor();
+        }
     }
 
     private void CheckDoorConditions(GameObject player)
@@ -72,7 +83,7 @@ public class DoorController : MonoBehaviour
             else
             {
                 Debug.Log("Door Locked: You need the " + requiredKey + " key!");
-            }   
+            }
         }
 
         if (isRoomCleared)
@@ -88,7 +99,6 @@ public class DoorController : MonoBehaviour
                 return;
             }
         }
-
     }
 
     private bool AreEnemiesDead()
@@ -106,29 +116,47 @@ public class DoorController : MonoBehaviour
         return true;
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void OpenDoor()
     {
-        
+        Debug.Log("Opening Door");
+
+        targetPosition = startPosition + new Vector3(0, slideHeight, 0);
+
+        isOpening = true;
+        isClosing = false; 
+
+        this.enabled = true;
     }
 
-    // Update is called once per frame
+    private void CloseDoor()
+    {
+        Debug.Log("Closing Door");
+
+        targetPosition = startPosition;
+
+        isOpening = false;
+        isClosing = true;
+
+        this.enabled = true;
+    }
+
     void Update()
     {
-        if (isOpening)
+        if (isOpening || isClosing)
         {
             doorMesh.transform.position = Vector3.MoveTowards(
                 doorMesh.transform.position,
                 targetPosition,
                 slideSpeed * Time.deltaTime
             );
-        }
 
-        if (doorMesh.transform.position == targetPosition)
-        {
-            isOpening = false;
-            this.enabled = false;
-            Debug.Log("Door finished opening. Script disabled.");
+            if (doorMesh.transform.position == targetPosition)
+            {
+                isOpening = false;
+                isClosing = false;
+                this.enabled = false;
+                Debug.Log("Door finished moving. Script disabled.");
+            }
         }
     }
 }
