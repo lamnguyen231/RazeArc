@@ -8,6 +8,7 @@ public abstract class WeaponBase : MonoBehaviour
     public float damage = 25;
     public float fireRate = 0.5f;
     public float range = 100f;
+    public bool isAutomatic = false;
 
     [Header("Ammo Settings")]
     public int magazineSize = 12;
@@ -51,9 +52,19 @@ public abstract class WeaponBase : MonoBehaviour
             return;
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (isAutomatic)
         {
-            TryFire();
+            if (Input.GetMouseButton(0))
+            {
+                TryFire();
+            }
+        }
+        else
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                TryFire();
+            }
         }
     }
 
