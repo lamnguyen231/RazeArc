@@ -9,7 +9,7 @@ public class ZombieWalk : StateMachineBehaviour
     List<Transform> waypoints = new List<Transform>();
     NavMeshAgent agent;
     Transform player;
-    [SerializeField] float chaseArea = 10000000000000;
+    //[SerializeField] float chaseArea = 10000000000000;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -29,16 +29,9 @@ public class ZombieWalk : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         timer += Time.deltaTime;
-        float distance = Vector3.Distance(player.position, animator.transform.position);
-        if (distance < chaseArea)
+        float distance = Vector3.Distance(player.position, animator.transform.position);        
+        if (agent.remainingDistance < agent.stoppingDistance)
         {            
-            animator.SetBool("foundPlayer", true);
-            animator.SetBool("isWalking", false);
-        }
-        else if (agent.remainingDistance < agent.stoppingDistance)
-        {
-            animator.SetBool("isWalking", false);
-            animator.SetBool("isIdle", true);
             agent.SetDestination(waypoints[Random.Range(0, waypoints.Count)].position);
         }        
     }
