@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum SwitchFunction
 {
@@ -15,6 +16,9 @@ public class SwitchController : MonoBehaviour
 
     [Tooltip("Which button should the player press?")]
     public KeyCode interactKey = KeyCode.E;
+
+    [Header("NextLevel")]
+    public string nextLevelName;
 
     [Header("If Open Door")]
     public GameObject doorToOpen;
@@ -69,7 +73,7 @@ public class SwitchController : MonoBehaviour
         if (switchAction == SwitchFunction.EndLevel)
         {
             Debug.Log("Level finished. Loading next level.");
-            // SceneManager.LoadScene("Lvl2"); 
+            SceneManager.LoadScene(nextLevelName); 
         }
         else if (switchAction == SwitchFunction.OpenDoor)
         {

@@ -301,7 +301,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c2b36ad48ea501844b51bfe7b9ae43b5, type: 2}
+  - {fileID: 2100000, guid: dfec56f2ddabad6498889a0e0528050b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -653,7 +653,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: 2b4ff904a014ca149b90204c89f5ac13, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1005,7 +1005,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: 2b4ff904a014ca149b90204c89f5ac13, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1233,8 +1233,8 @@ MonoBehaviour:
       m_FlipU: 0
       m_FlipV: 0
       m_SwapUV: 0
-      m_Fill: 1
-      m_Scale: {x: 1, y: 1}
+      m_Fill: 0
+      m_Scale: {x: 4, y: 4}
       m_Offset: {x: 0, y: 0}
       m_Rotation: 0
       m_Anchor: 9
@@ -1299,10 +1299,10 @@ MonoBehaviour:
   - {x: 3, y: 13.5}
   - {x: -3, y: -13.5}
   - {x: 3, y: -13.5}
-  - {x: 3, y: -13.5}
-  - {x: -3, y: -13.5}
-  - {x: 3, y: 13.5}
-  - {x: -3, y: 13.5}
+  - {x: 0.44444445, y: -2}
+  - {x: -0.44444445, y: -2}
+  - {x: 0.44444445, y: 2}
+  - {x: -0.44444445, y: 2}
   m_Textures2: []
   m_Textures3: []
   m_Tangents:
@@ -1339,11 +1339,19 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2046
+  m_VersionIndex: 2056
   m_IsSelectable: 1
-  m_SelectedFaces: 
-  m_SelectedEdges: []
-  m_SelectedVertices: 
+  m_SelectedFaces: 05000000
+  m_SelectedEdges:
+  - a: 20
+    b: 21
+  - a: 22
+    b: 20
+  - a: 21
+    b: 23
+  - a: 23
+    b: 22
+  m_SelectedVertices: 14000000150000001600000017000000
 --- !u!114 &329440568864474463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1392,7 +1400,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: 9f666271a6e44cd4d876420a7400c91f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
