@@ -4,6 +4,9 @@ using UnityEngine;
 
 public abstract class WeaponBase : MonoBehaviour
 {
+    [Header("Weapon Behavior")]
+    public bool usesAmmo = true;
+
     [Header("Weapon Stats")]
     public float damage = 25;
     public float fireRate = 0.5f;
@@ -18,6 +21,20 @@ public abstract class WeaponBase : MonoBehaviour
     [Header("Recoil Settings")]
     public Vector3 recoilMin = new Vector3(-0.5f, -15f, 0f);
     public Vector3 recoilMax = new Vector3(0.5f, -20f, 0f);
+
+    [Header("Motion Type")]
+    public WeaponMotionType motionType = WeaponMotionType.Gun;
+
+    [Header("Gun Kickback")]
+    public float kickbackAmount = 0.15f;
+    public float kickbackRecoverySpeed = 8f;
+    Vector3 originalLocalPosition;
+
+    [Header("Melee Swing")]
+    public float swingAngle = 60f;
+    public float swingSpeed = 12f;
+    Quaternion originalLocalRotation;
+    bool isSwinging = false;
 
     [Header("References")]
     public Transform firePoint;
@@ -36,17 +53,32 @@ public abstract class WeaponBase : MonoBehaviour
 
     protected virtual void Start()
     {
-        currentAmmo = magazineSize;
+        if (usesAmmo)
+        {
+            currentAmmo = magazineSize;
+        }
+
+        originalLocalPosition = transform.localPosition;
+        originalLocalRotation = transform.localRotation;
     }
 
     void Update()
     {
         HandleInput();
+
+        if (motionType == WeaponMotionType.Gun)
+        {
+            transform.localPosition = Vector3.Lerp(
+                transform.localPosition,
+                originalLocalPosition,
+                kickbackRecoverySpeed * Time.deltaTime
+            );
+        }
     }
 
     protected virtual void HandleInput()
     {
-        if (Input.GetKeyDown(KeyCode.R) && !isReloading)
+        if (usesAmmo && Input.GetKeyDown(KeyCode.R) && !isReloading)
         {
             reloadCoroutine = StartCoroutine(Reload());
             return;
@@ -75,7 +107,7 @@ public abstract class WeaponBase : MonoBehaviour
             CancelReload();
         }
 
-        if (currentAmmo <= 0)
+        if (usesAmmo && currentAmmo <= 0)
         {
             if (reserveAmmo > 0 && !reloadCancelledThisFrame)
             {
@@ -93,18 +125,35 @@ public abstract class WeaponBase : MonoBehaviour
         if (Time.time >= lastShotTime + fireRate)
         {
             lastShotTime = Time.time;
-            currentAmmo--;
-
-            if (cameraRecoil != null)
+            if (usesAmmo)
             {
-                Vector3 recoil = new Vector3(
-                    Random.Range(recoilMin.x, recoilMax.x),
-                    Random.Range(recoilMin.y, recoilMax.y),
-                    0f
-                );
-
-                cameraRecoil.AddRecoil(recoil);
+                currentAmmo--;
             }
+
+            // Weapon attack animation
+            if (motionType == WeaponMotionType.Gun)
+            {
+                if (cameraRecoil != null)
+                {
+                    Vector3 recoil = new Vector3(
+                        Random.Range(recoilMin.x, recoilMax.x),
+                        Random.Range(recoilMin.y, recoilMax.y),
+                        0f
+                    );
+
+                    cameraRecoil.AddRecoil(recoil);
+                }
+
+                transform.localPosition -= Vector3.forward * kickbackAmount;
+            }
+            else if (motionType == WeaponMotionType.Melee)
+            {
+                if (!isSwinging)
+                {
+                    StartCoroutine(PerformSwing());
+                }
+            }
+
 
             Fire();
         }
@@ -112,6 +161,11 @@ public abstract class WeaponBase : MonoBehaviour
 
     protected IEnumerator Reload()
     {
+        if (!usesAmmo)
+        {
+            yield break; // This weapon doesn't use ammo
+        }
+
         if (currentAmmo == magazineSize)
         {
             yield break; // Magazine is already full
@@ -149,6 +203,58 @@ public abstract class WeaponBase : MonoBehaviour
         reloadCancelledThisFrame = true;
 
         Debug.Log("Reload Cancelled");
+    }
+
+    IEnumerator PerformSwing()
+    {
+        isSwinging = true;
+
+        Quaternion startRot = originalLocalRotation;
+
+        // downward diagonal slash
+        Quaternion swingRot = (
+            originalLocalRotation *
+            Quaternion.Euler(-90f, -5f, 15f)
+        );
+
+        float attackTime = 0.08f;
+        float recoverTime = 0.18f;
+
+        float t = 0;
+
+        // ATTACK (fast)
+        while (t < attackTime)
+        {
+            t += Time.deltaTime;
+            float progress = t / attackTime;
+
+            transform.localPosition =
+                originalLocalPosition + Vector3.forward * 0.12f;
+
+            transform.localRotation =
+                Quaternion.Slerp(startRot, swingRot, progress);
+
+            yield return null;
+        }
+
+        t = 0;
+
+        // RECOVERY (slower)
+        while (t < recoverTime)
+        {
+            t += Time.deltaTime;
+            float progress = t / recoverTime;
+
+            transform.localPosition = originalLocalPosition;
+
+            transform.localRotation =
+                Quaternion.Slerp(swingRot, startRot, progress);
+
+            yield return null;
+        }
+
+        transform.localRotation = startRot;
+        isSwinging = false;
     }
 
     protected abstract void Fire();
