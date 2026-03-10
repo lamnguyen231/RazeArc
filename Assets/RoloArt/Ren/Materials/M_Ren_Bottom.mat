@@ -8,12 +8,11 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_Ren_Bottom
-  m_Shader: {fileID: 4800000, guid: 96d05de60c5f7474491f9f94568cf623, type: 3}
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords:
-  - _DETAIL_MULX2
   - _REQUIRE_UV2
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -423,7 +422,7 @@ Material:
     - _GlitterUVMode: 0
     - _GlitterVRParallaxStrength: 0
     - _GlossMapScale: 1
-    - _Glossiness: 0.59999996
+    - _Glossiness: 0
     - _GlossyReflections: 1
     - _IDMask1: 0
     - _IDMask2: 0

@@ -8,8 +8,8 @@ public class EnemyAI : MonoBehaviour
         Idle,
         Walk,
         Chase,
-        Scream
-    //Attack, 
+        Scream,
+        Attack 
     //BeingAttacked, 
     //Defeated
     }
@@ -19,6 +19,7 @@ public class EnemyAI : MonoBehaviour
     public float chaseRange = 10f;
     public float idleDuration = 3f;
     public float screamDuration = 2f;
+    public float attackRange = 5f;
 
     [Header("Waypoints system")]
     public List<Transform> waypoints; 
@@ -55,6 +56,7 @@ public class EnemyAI : MonoBehaviour
             case EnemyState.Walk: Debug.Log("hhh" + currentState.ToString()); HandleWalk(); break;
             case EnemyState.Chase: Debug.Log("hhh" + currentState.ToString()); HandleChase(); break;
             case EnemyState.Scream: Debug.Log("hhh" + currentState.ToString()); HandleScream(); break;
+            case EnemyState.Attack: Debug.Log("hhh" + currentState.ToString()); HandleAttack(); break;
         }
     }
 
@@ -90,16 +92,20 @@ public class EnemyAI : MonoBehaviour
             ChangeState(EnemyState.Idle); 
         }
     }
-
-    void HandleScream()
+    void LookAtPlayer()
     {
-        agent.isStopped = true;
         Vector3 direction = player.position - transform.position;
-        direction.y = 0; 
+        direction.y = 0;
         if (direction != Vector3.zero)
         {
             transform.rotation = Quaternion.LookRotation(direction);
         }
+    }
+
+    void HandleScream()
+    {
+        agent.isStopped = true;
+        LookAtPlayer();
         screamTimer += Time.deltaTime;
         if (screamTimer >= screamDuration)
         {
@@ -123,11 +129,25 @@ public class EnemyAI : MonoBehaviour
         {
             ChangeState(EnemyState.Walk);
         }
+        if (Vector3.Distance(transform.position, player.position) <= attackRange)
+        {
+            ChangeState(EnemyState.Attack);
+        }
     }
 
-    // --- ham ho tro ---
+    void HandleAttack()
+    {
+        agent.SetDestination(transform.position);
+        LookAtPlayer();
+        if (Vector3.Distance(transform.position, player.position) > attackRange * 1.5f)
+        {
+            ChangeState(EnemyState.Chase);
+        }
+    }
 
-    void CheckNearPlayer()
+        // --- ham ho tro ---
+
+        void CheckNearPlayer()
     {
         if (Vector3.Distance(transform.position, player.position) < chaseRange)
         {
