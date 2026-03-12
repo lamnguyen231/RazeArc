@@ -21,8 +21,8 @@ public class SMG : WeaponBase
         reserveAmmo = 120;
         reloadTime = 2f;
 
-        recoilMin = new Vector3(-0.3f, -10f, 0f);
-        recoilMax = new Vector3(0.3f, -15f, 0f);
+        recoilMin = new Vector3(-0.3f, -20f, 0f);
+        recoilMax = new Vector3(0.3f, -30f, 0f);
     }
 
     protected override void Fire()
