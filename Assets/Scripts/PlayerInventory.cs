@@ -49,6 +49,20 @@ public class PlayerInventory : MonoBehaviour, IDamageable
         }
     }
 
+    public void PickUpHealthPack()
+    {
+        playerHealth += 10f;
+        Debug.Log($"You have healed 10 health");
+
+        if (playerHealth >= 100) 
+        {
+            playerHealth = playerMaxHealth;
+            Debug.Log("You are full haehtl");
+        }
+
+        UpdateHealthUI();
+    }
+
     public void UpdateHealthUI()
     {
         if (healthText != null)

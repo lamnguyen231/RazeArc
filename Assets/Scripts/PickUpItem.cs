@@ -5,6 +5,7 @@ using UnityEngine;
 public class PickUpItem : MonoBehaviour
 {
     public bool isKeycard = false;
+    public bool isHealthPack = false;
     public string keyColor = "None";
 
     public void OnTriggerEnter(Collider other)
@@ -19,6 +20,13 @@ public class PickUpItem : MonoBehaviour
                 {
                     inventory.PickUpKey(keyColor);
                     Debug.Log("Picked up " + keyColor);
+                    Destroy(gameObject);
+                }
+
+                if (isHealthPack)
+                {
+                    inventory.PickUpHealthPack();
+                    Debug.Log("Picked up Health Pack");
                     Destroy(gameObject);
                 }
             }
