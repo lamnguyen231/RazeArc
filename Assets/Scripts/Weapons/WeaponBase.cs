@@ -32,9 +32,34 @@ public abstract class WeaponBase : MonoBehaviour
     public float recoilKickAngle = 3.5f;
     public float maxRecoilAngle = 12f;
     public float recoilAngleRecoverySpeed = 16f;
+
+    [Header("Tracer Settings")]
+    public bool useTracer = true;
+    public int tracerEveryNthShot = 1;
+    public float tracerDuration = 0.08f;
+    public float tracerWidth = 0.07f;
+    public float tracerSpeed = 900f;
+    public Color tracerStartColor = new Color(1f, 0.95f, 0.7f, 1f);
+    public Color tracerEndColor = new Color(1f, 0.6f, 0.2f, 0.35f);
+    [Range(0f, 1f)]
+    public float tracerAimRayBlend = 0.65f;
+    public float tracerMaxAimRayOffset = 0.2f;
+
+    [Header("Muzzle Flash Settings")]
+    public bool useMuzzleFlash = true;
+    public int muzzleFlashParticleCount = 12;
+    public float muzzleFlashDuration = 0.05f;
+    public float muzzleFlashSize = 0.18f;
+    public float muzzleFlashSpeed = 8f;
+    public Color muzzleFlashColor = new Color(1f, 0.78f, 0.45f, 1f);
+    public float muzzleFlashLightIntensity = 7f;
+    public float muzzleFlashLightRange = 4f;
+    public float muzzleFlashLightDuration = 0.09f;
     Vector3 originalLocalPosition;
     Quaternion originalRecoilPivotLocalRotation;
     float currentRecoilAngle;
+    int tracerShotCounter;
+    Material runtimeMuzzleFlashMaterial;
 
     [Header("Melee Swing")]
     public float swingAngle = 60f;
@@ -52,6 +77,9 @@ public abstract class WeaponBase : MonoBehaviour
     public Transform firePoint;
     public CameraRecoil cameraRecoil;
 
+    [Header("Gun Muzzle Compensation")]
+    public Vector3 muzzleLocalOffset = new Vector3(0f, 0f, 0.2f);
+
     protected float lastShotTime = -999f;
     protected int currentAmmo;
     protected bool isReloading = false;
@@ -61,6 +89,15 @@ public abstract class WeaponBase : MonoBehaviour
 
     protected virtual void Awake()
     {
+    }
+
+    protected virtual void OnDestroy()
+    {
+        if (runtimeMuzzleFlashMaterial != null)
+        {
+            Destroy(runtimeMuzzleFlashMaterial);
+            runtimeMuzzleFlashMaterial = null;
+        }
     }
 
     protected virtual void Start()
@@ -184,6 +221,8 @@ public abstract class WeaponBase : MonoBehaviour
                     0f,
                     maxRecoilAngle
                 );
+
+                SpawnMuzzleFlash();
             }
             else if (motionType == WeaponMotionType.Melee)
             {
@@ -242,6 +281,282 @@ public abstract class WeaponBase : MonoBehaviour
         reloadCancelledThisFrame = true;
 
         Debug.Log("Reload Cancelled");
+    }
+
+    protected void SpawnTracer(Vector3 startPoint, Vector3 endPoint)
+    {
+        if (!useTracer)
+        {
+            return;
+        }
+
+        tracerShotCounter++;
+        int tracerInterval = Mathf.Max(1, tracerEveryNthShot);
+        if (tracerShotCounter % tracerInterval != 0)
+        {
+            return;
+        }
+
+        StartCoroutine(PlayTracer(startPoint, endPoint));
+    }
+
+    protected Vector3 GetGunMuzzlePosition()
+    {
+        Transform source = firePoint != null ? firePoint : transform;
+        return source.TransformPoint(muzzleLocalOffset);
+    }
+
+    protected Vector3 GetTracerStartPosition(Ray aimRay)
+    {
+        Vector3 muzzlePosition = GetGunMuzzlePosition();
+        float depthOnAimRay = Mathf.Max(
+            0f,
+            Vector3.Dot(muzzlePosition - aimRay.origin, aimRay.direction)
+        );
+        Vector3 projectedPoint =
+            aimRay.origin + (aimRay.direction * depthOnAimRay);
+
+        float maxOffset = Mathf.Max(0f, tracerMaxAimRayOffset);
+        Vector3 alignmentOffset = projectedPoint - muzzlePosition;
+        if (maxOffset > 0f && alignmentOffset.magnitude > maxOffset)
+        {
+            projectedPoint =
+                muzzlePosition + alignmentOffset.normalized * maxOffset;
+        }
+
+        return Vector3.Lerp(
+            muzzlePosition,
+            projectedPoint,
+            Mathf.Clamp01(tracerAimRayBlend)
+        );
+    }
+
+    void SpawnMuzzleFlash()
+    {
+        if (!useMuzzleFlash)
+        {
+            return;
+        }
+
+        Transform source = firePoint != null ? firePoint : transform;
+        Vector3 muzzlePosition = GetGunMuzzlePosition();
+
+        GameObject flashObject = new GameObject("MuzzleFlash");
+        flashObject.transform.position = muzzlePosition;
+        flashObject.transform.rotation = Quaternion.LookRotation(source.forward, source.up);
+
+        ParticleSystem flashParticles = flashObject.AddComponent<ParticleSystem>();
+        flashParticles.Stop(
+            true,
+            ParticleSystemStopBehavior.StopEmittingAndClear
+        );
+        var main = flashParticles.main;
+        main.playOnAwake = false;
+        main.duration = muzzleFlashDuration;
+        main.startLifetime = new ParticleSystem.MinMaxCurve(
+            muzzleFlashDuration * 0.5f,
+            muzzleFlashDuration
+        );
+        main.startSpeed = new ParticleSystem.MinMaxCurve(
+            muzzleFlashSpeed * 0.7f,
+            muzzleFlashSpeed
+        );
+        main.startSize = new ParticleSystem.MinMaxCurve(
+            muzzleFlashSize * 0.65f,
+            muzzleFlashSize
+        );
+        main.startColor = muzzleFlashColor;
+        main.maxParticles = Mathf.Max(1, muzzleFlashParticleCount + 4);
+        main.loop = false;
+        main.simulationSpace = ParticleSystemSimulationSpace.Local;
+
+        var emission = flashParticles.emission;
+        emission.enabled = false;
+
+        var shape = flashParticles.shape;
+        shape.enabled = true;
+        shape.shapeType = ParticleSystemShapeType.Cone;
+        shape.angle = 18f;
+        shape.radius = 0.01f;
+        shape.length = 0.06f;
+
+        ParticleSystemRenderer particleRenderer =
+            flashObject.GetComponent<ParticleSystemRenderer>();
+        particleRenderer.renderMode = ParticleSystemRenderMode.Billboard;
+        particleRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        particleRenderer.receiveShadows = false;
+
+        Material muzzleFlashMaterial = GetOrCreateMuzzleFlashMaterial();
+        if (muzzleFlashMaterial != null)
+        {
+            particleRenderer.material = muzzleFlashMaterial;
+            if (muzzleFlashMaterial.HasProperty("_BaseColor"))
+            {
+                muzzleFlashMaterial.SetColor("_BaseColor", muzzleFlashColor);
+            }
+            if (muzzleFlashMaterial.HasProperty("_Color"))
+            {
+                muzzleFlashMaterial.SetColor("_Color", muzzleFlashColor);
+            }
+        }
+
+        if (muzzleFlashLightIntensity > 0f)
+        {
+            Light flashLight = flashObject.AddComponent<Light>();
+            flashLight.type = LightType.Point;
+            flashLight.color = muzzleFlashColor;
+            flashLight.intensity = muzzleFlashLightIntensity;
+            flashLight.range = muzzleFlashLightRange;
+            flashLight.shadows = LightShadows.None;
+            flashLight.renderMode = LightRenderMode.ForcePixel;
+            flashLight.cullingMask = ~0;
+            flashLight.enabled = true;
+
+            StartCoroutine(FadeMuzzleFlashLight(flashLight, muzzleFlashLightDuration));
+        }
+
+        flashParticles.Emit(Mathf.Max(1, muzzleFlashParticleCount));
+        flashParticles.Play();
+
+        float lifetime = Mathf.Max(muzzleFlashDuration, muzzleFlashLightDuration);
+        Destroy(flashObject, lifetime + 0.08f);
+    }
+
+    IEnumerator FadeMuzzleFlashLight(Light flashLight, float duration)
+    {
+        if (flashLight == null)
+        {
+            yield break;
+        }
+
+        float startIntensity = flashLight.intensity;
+        float elapsed = 0f;
+        float fadeDuration = Mathf.Max(0.01f, duration);
+
+        while (elapsed < fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float progress = elapsed / fadeDuration;
+            flashLight.intensity = Mathf.Lerp(startIntensity, 0f, progress);
+            yield return null;
+        }
+
+        flashLight.intensity = 0f;
+    }
+
+    Material GetOrCreateMuzzleFlashMaterial()
+    {
+        if (runtimeMuzzleFlashMaterial != null)
+        {
+            return runtimeMuzzleFlashMaterial;
+        }
+
+        string[] shaderCandidates =
+        {
+            "Universal Render Pipeline/Particles/Unlit",
+            "Particles/Standard Unlit",
+            "Legacy Shaders/Particles/Additive",
+            "Sprites/Default",
+        };
+
+        Shader chosenShader = null;
+        for (int i = 0; i < shaderCandidates.Length; i++)
+        {
+            Shader candidate = Shader.Find(shaderCandidates[i]);
+            if (candidate != null)
+            {
+                chosenShader = candidate;
+                break;
+            }
+        }
+
+        if (chosenShader == null)
+        {
+            return null;
+        }
+
+        runtimeMuzzleFlashMaterial = new Material(chosenShader);
+        runtimeMuzzleFlashMaterial.name = "RuntimeMuzzleFlashMaterial";
+        runtimeMuzzleFlashMaterial.enableInstancing = true;
+
+        if (runtimeMuzzleFlashMaterial.HasProperty("_Surface"))
+        {
+            runtimeMuzzleFlashMaterial.SetFloat("_Surface", 1f);
+        }
+        if (runtimeMuzzleFlashMaterial.HasProperty("_Blend"))
+        {
+            runtimeMuzzleFlashMaterial.SetFloat("_Blend", 0f);
+        }
+
+        return runtimeMuzzleFlashMaterial;
+    }
+
+    IEnumerator PlayTracer(Vector3 startPoint, Vector3 endPoint)
+    {
+        GameObject tracerObject = new GameObject("BulletTracer");
+        tracerObject.transform.position = startPoint;
+
+        TrailRenderer trail = tracerObject.AddComponent<TrailRenderer>();
+        trail.time = tracerDuration;
+        trail.startWidth = tracerWidth;
+        trail.endWidth = 0f;
+        trail.minVertexDistance = 0.01f;
+        trail.numCapVertices = 2;
+        trail.numCornerVertices = 2;
+        trail.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        trail.receiveShadows = false;
+        trail.alignment = LineAlignment.View;
+        trail.emitting = true;
+
+        Gradient tracerGradient = new Gradient();
+        tracerGradient.SetKeys(
+            new GradientColorKey[]
+            {
+                new GradientColorKey(tracerStartColor, 0f),
+                new GradientColorKey(tracerStartColor, 0.35f),
+                new GradientColorKey(tracerEndColor, 1f),
+            },
+            new GradientAlphaKey[]
+            {
+                new GradientAlphaKey(tracerStartColor.a, 0f),
+                new GradientAlphaKey(tracerStartColor.a, 0.35f),
+                new GradientAlphaKey(tracerEndColor.a, 1f),
+            }
+        );
+        trail.colorGradient = tracerGradient;
+
+        Shader tracerShader = Shader.Find("Unlit/Color");
+        if (tracerShader == null)
+        {
+            tracerShader = Shader.Find("Sprites/Default");
+        }
+        if (tracerShader == null)
+        {
+            tracerShader = Shader.Find("Legacy Shaders/Particles/Additive");
+        }
+        if (tracerShader != null)
+        {
+            Material tracerMaterial = new Material(tracerShader);
+            tracerMaterial.color = tracerStartColor;
+            trail.material = tracerMaterial;
+        }
+
+        yield return null;
+
+        float elapsed = 0f;
+        float speed = Mathf.Max(1f, tracerSpeed);
+        float travelDuration = Mathf.Max(0.005f, Vector3.Distance(startPoint, endPoint) / speed);
+
+        while (elapsed < travelDuration)
+        {
+            elapsed += Time.deltaTime;
+            float progress = elapsed / travelDuration;
+            tracerObject.transform.position = Vector3.Lerp(startPoint, endPoint, progress);
+            yield return null;
+        }
+
+        tracerObject.transform.position = endPoint;
+        Destroy(tracerObject, tracerDuration);
     }
 
     IEnumerator PerformSwing()

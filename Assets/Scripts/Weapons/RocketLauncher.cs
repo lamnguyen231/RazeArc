@@ -30,6 +30,17 @@ public class RocketLauncher : WeaponBase
         recoilKickAngle = 11f;
         maxRecoilAngle = 30f;
         recoilAngleRecoverySpeed = 12f;
+
+        useMuzzleFlash = true;
+        muzzleFlashParticleCount = 24;
+        muzzleFlashDuration = 0.07f;
+        muzzleFlashSize = 0.34f;
+        muzzleFlashSpeed = 11f;
+        muzzleFlashLightIntensity = 4.5f;
+        muzzleFlashLightRange = 3.8f;
+
+        // Lift and push muzzle FX to the launcher tube opening.
+        muzzleLocalOffset = new Vector3(-0.1f, 0.08f, -0.6f);
     }
 
     protected override void Fire()
@@ -38,12 +49,13 @@ public class RocketLauncher : WeaponBase
         Ray ray = camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
 
         Vector3 direction = ray.direction;
+        Vector3 muzzlePosition = GetGunMuzzlePosition();
 
-        Debug.Log("Rocket spawn: " + firePoint.position);
+        Debug.Log("Rocket spawn: " + muzzlePosition);
 
         GameObject rocket = Instantiate(
             rocketPrefab,
-            firePoint.position,
+            muzzlePosition,
             Quaternion.LookRotation(direction)
         );
 
