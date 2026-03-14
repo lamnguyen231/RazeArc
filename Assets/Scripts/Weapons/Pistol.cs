@@ -11,12 +11,13 @@ public class Pistol : WeaponBase
         base.Awake();
 
         // Weapon Identity
+        ammoType = AmmoType.Pistol;
         damage = 25f;
         fireRate = 0.4f;
         range = 100f;
 
         magazineSize = 12;
-        reserveAmmo = 36;
+        reserveAmmo = 24;
         reloadTime = 1.5f;
 
         recoilMin = new Vector3(-0.75f, -18f, 0f);

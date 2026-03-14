@@ -14,13 +14,14 @@ public class RocketLauncher : WeaponBase
 
         // Weapon identity
         isAutomatic = false;
+        ammoType = AmmoType.Rocket;
 
         damage = 100f;
         fireRate = 1.2f;
         range = 200f;
 
         magazineSize = 1;
-        reserveAmmo = 10;
+        reserveAmmo = 2;
         reloadTime = 2.5f;
 
         recoilMin = new Vector3(-2f, -100f, 0f);

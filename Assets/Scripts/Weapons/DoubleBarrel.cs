@@ -14,12 +14,13 @@ public class DoubleBarrel : WeaponBase
         base.Awake();
 
         // Weapon identity
+        ammoType = AmmoType.Shell;
         damage = 10f;
         fireRate = 0.8f;
         range = 50f;
 
         magazineSize = 2;
-        reserveAmmo = 20;
+        reserveAmmo = 10;
         reloadTime = 2.5f;
 
         recoilMin = new Vector3(-4f, -60f, 0f);

@@ -12,13 +12,14 @@ public class SMG : WeaponBase
 
         // Weapon Identity
         isAutomatic = true;
+        ammoType = AmmoType.SMG;
 
         damage = 12f;
         fireRate = 0.08f;
         range = 80f;
 
         magazineSize = 30;
-        reserveAmmo = 120;
+        reserveAmmo = 60;
         reloadTime = 2f;
 
         recoilMin = new Vector3(-0.3f, -20f, 0f);

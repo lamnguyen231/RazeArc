@@ -14,6 +14,7 @@ public abstract class WeaponBase : MonoBehaviour
     public bool isAutomatic = false;
 
     [Header("Ammo Settings")]
+    public AmmoType ammoType = AmmoType.Pistol;
     public int magazineSize = 12;
     public int reserveAmmo = 36;
     public float reloadTime = 1.5f;
@@ -86,6 +87,8 @@ public abstract class WeaponBase : MonoBehaviour
 
     protected bool reloadCancelledThisFrame = false;
     protected Coroutine reloadCoroutine;
+    protected PlayerInventory playerInventory;
+    bool ammoPoolInitialized;
 
     protected virtual void Awake()
     {
@@ -102,9 +105,17 @@ public abstract class WeaponBase : MonoBehaviour
 
     protected virtual void Start()
     {
+        playerInventory = GetComponentInParent<PlayerInventory>();
+        if (playerInventory == null)
+        {
+            // Weapons can live under a different branch than PlayerBody in this project.
+            playerInventory = FindObjectOfType<PlayerInventory>();
+        }
+
         if (usesAmmo)
         {
             currentAmmo = magazineSize;
+            InitializeAmmoPool();
         }
 
         if (recoilPivot == null)
@@ -180,7 +191,7 @@ public abstract class WeaponBase : MonoBehaviour
 
         if (usesAmmo && currentAmmo <= 0)
         {
-            if (reserveAmmo > 0 && !reloadCancelledThisFrame)
+            if (GetReserveAmmoCount() > 0 && !reloadCancelledThisFrame)
             {
                 reloadCoroutine = StartCoroutine(Reload());
             }
@@ -249,7 +260,7 @@ public abstract class WeaponBase : MonoBehaviour
             yield break; // Magazine is already full
         }
 
-        if (reserveAmmo <= 0)
+        if (GetReserveAmmoCount() <= 0)
         {
             yield break; // No reserve ammo to reload
         }
@@ -260,13 +271,60 @@ public abstract class WeaponBase : MonoBehaviour
         yield return new WaitForSeconds(reloadTime);
 
         int ammoNeeded = magazineSize - currentAmmo;
-        int ammoToReload = Mathf.Min(ammoNeeded, reserveAmmo);
+        int ammoToReload = ConsumeReserveAmmo(ammoNeeded);
 
         currentAmmo += ammoToReload;
-        reserveAmmo -= ammoToReload;
 
         isReloading = false;
-        Debug.Log("Reloaded. Ammo: " + currentAmmo + "/" + reserveAmmo);
+        Debug.Log("Reloaded. Ammo: " + currentAmmo + "/" + GetReserveAmmoCount());
+    }
+
+    protected int GetReserveAmmoCount()
+    {
+        if (!usesAmmo)
+        {
+            return 0;
+        }
+
+        if (playerInventory != null)
+        {
+            return playerInventory.GetReserveAmmo(ammoType);
+        }
+
+        return Mathf.Max(0, reserveAmmo);
+    }
+
+    int ConsumeReserveAmmo(int amount)
+    {
+        int requested = Mathf.Max(0, amount);
+        if (requested <= 0)
+        {
+            return 0;
+        }
+
+        if (playerInventory != null)
+        {
+            return playerInventory.ConsumeReserveAmmo(ammoType, requested);
+        }
+
+        int consumed = Mathf.Min(requested, Mathf.Max(0, reserveAmmo));
+        reserveAmmo -= consumed;
+        return consumed;
+    }
+
+    void InitializeAmmoPool()
+    {
+        if (ammoPoolInitialized)
+        {
+            return;
+        }
+
+        if (playerInventory != null)
+        {
+            playerInventory.EnsureAmmoPool(ammoType, reserveAmmo);
+        }
+
+        ammoPoolInitialized = true;
     }
 
     protected void CancelReload()
