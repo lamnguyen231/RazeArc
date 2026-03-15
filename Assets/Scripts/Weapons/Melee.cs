@@ -34,17 +34,47 @@ public class Melee : WeaponBase
 
     protected override void Fire()
     {
-        Vector3 origin = firePoint.position;
-        Vector3 direction = firePoint.forward;
+        Transform attackSource = firePoint != null ? firePoint : transform;
+        Vector3 attackCenter = attackSource.position + attackSource.forward * meleeRange;
 
-        RaycastHit hit;
-        if (Physics.SphereCast(origin, meleeRadius, direction, out hit, meleeRange, hitMask))
+        Collider[] hits = Physics.OverlapSphere(
+            attackCenter,
+            meleeRadius,
+            hitMask,
+            QueryTriggerInteraction.Ignore
+        );
+
+        HashSet<IDamageable> damagedTargets = new HashSet<IDamageable>();
+        bool hitSomething = false;
+
+        for (int i = 0; i < hits.Length; i++)
         {
-            Debug.Log("Melee hit: " + hit.collider.name);
-            if (hit.collider.TryGetComponent<IDamageable>(out var damageable))
+            Collider hit = hits[i];
+            if (hit == null)
+            {
+                continue;
+            }
+
+            IDamageable damageable =
+                hit.GetComponent<IDamageable>()
+                ?? hit.GetComponentInParent<IDamageable>();
+
+            if (damageable == null)
+            {
+                continue;
+            }
+
+            if (damagedTargets.Add(damageable))
             {
                 damageable.TakeDamage(damage);
+                hitSomething = true;
+                Debug.Log("Melee hit: " + hit.name);
             }
+        }
+
+        if (!hitSomething)
+        {
+            Debug.Log("Melee missed.");
         }
     }
 

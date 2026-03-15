@@ -83,6 +83,11 @@ public abstract class WeaponBase : MonoBehaviour
     Quaternion originalLocalRotation;
     bool isSwinging = false;
 
+    [Header("Equip Animation")]
+    public bool useEquipAnimation = true;
+    public Vector3 equipStartOffset = new Vector3(0f, -0.35f, 0f);
+    public float equipRiseDuration = 0.22f;
+
     [Header("References")]
     public Transform firePoint;
     public CameraRecoil cameraRecoil;
@@ -98,9 +103,13 @@ public abstract class WeaponBase : MonoBehaviour
     protected Coroutine reloadCoroutine;
     protected PlayerInventory playerInventory;
     bool ammoPoolInitialized;
+    bool hasCachedPose;
+    bool isEquipping;
+    Coroutine equipCoroutine;
 
     protected virtual void Awake()
     {
+        CacheOriginalPose();
     }
 
     protected virtual void OnDestroy()
@@ -132,16 +141,53 @@ public abstract class WeaponBase : MonoBehaviour
             recoilPivot = transform;
         }
 
-        originalLocalPosition = transform.localPosition;
-        originalLocalRotation = transform.localRotation;
-        originalRecoilPivotLocalRotation = recoilPivot.localRotation;
+        CacheOriginalPose();
+    }
+
+    protected virtual void OnEnable()
+    {
+        CacheOriginalPose();
+
+        if (useEquipAnimation && motionType == WeaponMotionType.Gun)
+        {
+            if (equipCoroutine != null)
+            {
+                StopCoroutine(equipCoroutine);
+            }
+
+            equipCoroutine = StartCoroutine(PlayEquipAnimation());
+        }
+        else
+        {
+            isEquipping = false;
+            transform.localPosition = originalLocalPosition;
+            transform.localRotation = originalLocalRotation;
+            if (recoilPivot != null)
+            {
+                recoilPivot.localRotation = originalRecoilPivotLocalRotation;
+            }
+        }
+    }
+
+    protected virtual void OnDisable()
+    {
+        if (equipCoroutine != null)
+        {
+            StopCoroutine(equipCoroutine);
+            equipCoroutine = null;
+        }
+
+        isEquipping = false;
+        isReloading = false;
+        reloadCoroutine = null;
+        reloadCancelledThisFrame = false;
     }
 
     void Update()
     {
         HandleInput();
 
-        if (motionType == WeaponMotionType.Gun)
+        if (motionType == WeaponMotionType.Gun && !isEquipping)
         {
             if (!isReloading)
             {
@@ -181,6 +227,11 @@ public abstract class WeaponBase : MonoBehaviour
 
     protected virtual void HandleInput()
     {
+        if (isEquipping)
+        {
+            return;
+        }
+
         if (usesAmmo && Input.GetKeyDown(KeyCode.R) && !isReloading)
         {
             reloadCoroutine = StartCoroutine(Reload());
@@ -765,6 +816,57 @@ public abstract class WeaponBase : MonoBehaviour
 
         transform.localRotation = startRot;
         isSwinging = false;
+    }
+
+    void CacheOriginalPose()
+    {
+        if (recoilPivot == null)
+        {
+            recoilPivot = transform;
+        }
+
+        if (hasCachedPose)
+        {
+            return;
+        }
+
+        originalLocalPosition = transform.localPosition;
+        originalLocalRotation = transform.localRotation;
+        originalRecoilPivotLocalRotation = recoilPivot.localRotation;
+        hasCachedPose = true;
+    }
+
+    IEnumerator PlayEquipAnimation()
+    {
+        isEquipping = true;
+
+        float duration = Mathf.Max(0.01f, equipRiseDuration);
+        Vector3 startPosition = originalLocalPosition + equipStartOffset;
+
+        transform.localPosition = startPosition;
+        transform.localRotation = originalLocalRotation;
+        if (recoilPivot != null)
+        {
+            recoilPivot.localRotation = originalRecoilPivotLocalRotation;
+        }
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            float easedT = t * t * (3f - 2f * t);
+            transform.localPosition = Vector3.LerpUnclamped(
+                startPosition,
+                originalLocalPosition,
+                easedT
+            );
+            yield return null;
+        }
+
+        transform.localPosition = originalLocalPosition;
+        isEquipping = false;
+        equipCoroutine = null;
     }
 
     protected abstract void Fire();
