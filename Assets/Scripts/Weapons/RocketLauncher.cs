@@ -27,13 +27,13 @@ public class RocketLauncher : WeaponBase
         recoilMin = new Vector3(-2f, -100f, 0f);
         recoilMax = new Vector3(2f, -120f, 0f);
 
-        kickbackAmount = 0.4f;
-        kickReturnDuration = 0.18f;
-        kickReturnExponent = 3.1f;
-        recoilKickAngle = 11f;
-        maxRecoilAngle = 30f;
-        recoilAngleRecoverySpeed = 12f;
-        fovKickAmount = 1.2f;
+        kickbackAmount = 0.68f;
+        kickReturnDuration = 0.24f;
+        kickReturnExponent = 3.4f;
+        recoilKickAngle = 16f;
+        maxRecoilAngle = 38f;
+        recoilAngleRecoverySpeed = 9.5f;
+        fovKickAmount = 1.65f;
 
         useReloadAnimation = true;
         reloadTiltEuler = new Vector3(38f, 0f, 0f);

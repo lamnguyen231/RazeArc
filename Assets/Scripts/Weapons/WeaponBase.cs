@@ -69,6 +69,12 @@ public abstract class WeaponBase : MonoBehaviour
     [Range(0.05f, 0.45f)]
     public float reloadRaiseFraction = 0.1f;
 
+    [Header("Reload Movement Bob")]
+    public bool useReloadMovementBob = true;
+    public float reloadBobFrequency = 8f;
+    public Vector3 reloadBobPositionAmplitude = new Vector3(0.006f, 0.009f, 0.004f);
+    public Vector3 reloadBobRotationAmplitude = new Vector3(0.9f, 0.45f, 0.9f);
+
     [Header("Tracer Settings")]
     public bool useTracer = true;
     public int tracerEveryNthShot = 1;
@@ -162,6 +168,7 @@ public abstract class WeaponBase : MonoBehaviour
     float kickOffsetPeak;
     float kickOffsetTimer;
     float movementBobTimer;
+    float reloadMovementBobTimer;
     float firingBobTimer;
     Vector3 bobPositionCurrent;
     Vector3 bobEulerCurrent;
@@ -269,6 +276,7 @@ public abstract class WeaponBase : MonoBehaviour
         kickOffsetPeak = 0f;
         kickOffsetTimer = 0f;
         movementBobTimer = 0f;
+        reloadMovementBobTimer = 0f;
         firingBobTimer = 0f;
         bobPositionCurrent = Vector3.zero;
         bobEulerCurrent = Vector3.zero;
@@ -468,6 +476,7 @@ public abstract class WeaponBase : MonoBehaviour
         isReloading = true;
         reloadPausedWhileHolstered = false;
         reloadTriggerType = triggerType;
+        ClearFireKickState();
 
         if (motionType == WeaponMotionType.Gun && useReloadAnimation)
         {
@@ -514,6 +523,14 @@ public abstract class WeaponBase : MonoBehaviour
     {
         UpdateFireKick();
         UpdateMovementBob();
+    }
+
+    void ClearFireKickState()
+    {
+        kickOffsetImpulse = 0f;
+        kickOffsetPeak = 0f;
+        kickOffsetTimer = 0f;
+        firingBobTimer = 0f;
     }
 
     void TriggerFireKick()
@@ -731,26 +748,94 @@ public abstract class WeaponBase : MonoBehaviour
         Quaternion reloadRotation =
             originalLocalRotation * Quaternion.Euler(reloadTiltEuler);
 
+        Vector3 basePosition;
+        Quaternion baseRotation;
+
         if (elapsedTime <= lowerEndTime)
         {
             float lowerT = Mathf.Clamp01(elapsedTime / lowerDuration);
-            transform.localPosition = Vector3.Lerp(originalLocalPosition, reloadPosition, lowerT);
-            transform.localRotation = Quaternion.Slerp(originalLocalRotation, reloadRotation, lowerT);
-            return;
+            basePosition = Vector3.Lerp(originalLocalPosition, reloadPosition, lowerT);
+            baseRotation = Quaternion.Slerp(originalLocalRotation, reloadRotation, lowerT);
         }
-
-        if (elapsedTime <= holdEndTime)
+        else if (elapsedTime <= holdEndTime)
         {
-            transform.localPosition = reloadPosition;
-            transform.localRotation = reloadRotation;
+            basePosition = reloadPosition;
+            baseRotation = reloadRotation;
+        }
+        else
+        {
+            float raiseTime = elapsedTime - holdEndTime;
+            float raiseT = Mathf.Clamp01(raiseTime / raiseDuration);
+            float snapProgress = 1f - Mathf.Pow(1f - raiseT, 3f);
+            basePosition = Vector3.Lerp(reloadPosition, originalLocalPosition, snapProgress);
+            baseRotation = Quaternion.Slerp(reloadRotation, originalLocalRotation, snapProgress);
+        }
+
+        Vector3 bobPosition;
+        Vector3 bobEuler;
+        EvaluateReloadMovementBob(out bobPosition, out bobEuler);
+
+        transform.localPosition = basePosition + bobPosition;
+        transform.localRotation = baseRotation * Quaternion.Euler(bobEuler);
+    }
+
+    void EvaluateReloadMovementBob(out Vector3 bobPosition, out Vector3 bobEuler)
+    {
+        bobPosition = Vector3.zero;
+        bobEuler = Vector3.zero;
+
+        if (!useReloadMovementBob)
+        {
+            reloadMovementBobTimer = 0f;
             return;
         }
 
-        float raiseTime = elapsedTime - holdEndTime;
-        float raiseT = Mathf.Clamp01(raiseTime / raiseDuration);
-        float snapProgress = 1f - Mathf.Pow(1f - raiseT, 3f);
-        transform.localPosition = Vector3.Lerp(reloadPosition, originalLocalPosition, snapProgress);
-        transform.localRotation = Quaternion.Slerp(reloadRotation, originalLocalRotation, snapProgress);
+        float horizontalSpeed = 0f;
+        bool isGrounded = true;
+
+        if (playerMovement != null && playerMovement.bodyController != null)
+        {
+            Vector3 controllerVelocity = playerMovement.bodyController.velocity;
+            horizontalSpeed = new Vector2(controllerVelocity.x, controllerVelocity.z).magnitude;
+            isGrounded = playerMovement.bodyController.isGrounded;
+        }
+        else
+        {
+            float x = Input.GetAxisRaw("Horizontal");
+            float z = Input.GetAxisRaw("Vertical");
+            horizontalSpeed = new Vector2(x, z).magnitude * 6f;
+        }
+
+        float speedDenominator = playerMovement != null
+            ? Mathf.Max(0.01f, playerMovement.moveSpeed)
+            : 6f;
+
+        float movementWeight = Mathf.Clamp01(horizontalSpeed / speedDenominator);
+        if (!isGrounded || movementWeight <= 0.01f)
+        {
+            reloadMovementBobTimer = 0f;
+            return;
+        }
+
+        reloadMovementBobTimer += Time.deltaTime
+            * Mathf.Max(0.1f, reloadBobFrequency)
+            * Mathf.Lerp(0.7f, 1.3f, movementWeight);
+
+        float sinA = Mathf.Sin(reloadMovementBobTimer);
+        float sinB = Mathf.Sin(reloadMovementBobTimer * 2f);
+        float cosA = Mathf.Cos(reloadMovementBobTimer);
+
+        bobPosition = new Vector3(
+            sinA * reloadBobPositionAmplitude.x,
+            (sinB * 0.5f + 0.5f) * reloadBobPositionAmplitude.y,
+            cosA * reloadBobPositionAmplitude.z
+        ) * movementWeight;
+
+        bobEuler = new Vector3(
+            sinB * reloadBobRotationAmplitude.x,
+            cosA * reloadBobRotationAmplitude.y,
+            sinA * reloadBobRotationAmplitude.z
+        ) * movementWeight;
     }
 
     protected void SpawnTracer(Vector3 startPoint, Vector3 endPoint)
