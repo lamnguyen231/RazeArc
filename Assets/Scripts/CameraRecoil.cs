@@ -12,8 +12,30 @@ public class CameraRecoil : MonoBehaviour
     public float returnSpeed = 10f;
     public float snappiness = 20f;
 
+    [Header("FOV Kick")]
+    public Camera recoilCamera;
+    public float fovKickReturnSpeed = 8f;
+    public float fovKickSnappiness = 14f;
+    public float maxFovKick = 8f;
+
     Vector3 currentRecoil;
     Vector3 targetRecoil;
+    float baseFov;
+    float currentFovKick;
+    float targetFovKick;
+
+    void Awake()
+    {
+        if (recoilCamera == null && cameraTransform != null)
+        {
+            recoilCamera = cameraTransform.GetComponent<Camera>();
+        }
+
+        if (recoilCamera != null)
+        {
+            baseFov = recoilCamera.fieldOfView;
+        }
+    }
 
     void Update()
     {
@@ -30,12 +52,34 @@ public class CameraRecoil : MonoBehaviour
             snappiness * Time.deltaTime
         );
 
+        targetFovKick = Mathf.Lerp(
+            targetFovKick,
+            0f,
+            fovKickReturnSpeed * Time.deltaTime
+        );
+        currentFovKick = Mathf.Lerp(
+            currentFovKick,
+            targetFovKick,
+            fovKickSnappiness * Time.deltaTime
+        );
+
+        if (recoilCamera != null)
+        {
+            recoilCamera.fieldOfView = baseFov + currentFovKick;
+        }
+
         ApplyRotation();
     }
 
     public void AddRecoil(Vector3 recoil)
     {
         targetRecoil += recoil;
+    }
+
+    public void AddFovKick(float kickAmount)
+    {
+        float safeKick = Mathf.Max(0f, kickAmount);
+        targetFovKick = Mathf.Clamp(targetFovKick + safeKick, 0f, Mathf.Max(0f, maxFovKick));
     }
 
     void ApplyRotation()

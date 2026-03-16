@@ -26,9 +26,12 @@ public class SMG : WeaponBase
         recoilMax = new Vector3(0.3f, -30f, 0f);
 
         kickbackAmount = 0.15f;
+        kickReturnDuration = 0.09f;
+        kickReturnExponent = 2f;
         recoilKickAngle = 1.4f;
         maxRecoilAngle = 5.5f;
         recoilAngleRecoverySpeed = 24f;
+        fovKickAmount = 0.12f;
 
         useReloadAnimation = true;
         reloadRaiseFraction = 0.055f;

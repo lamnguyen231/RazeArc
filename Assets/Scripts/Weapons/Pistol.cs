@@ -20,13 +20,16 @@ public class Pistol : WeaponBase
         reserveAmmo = 24;
         reloadTime = 1.5f;
 
-        recoilMin = new Vector3(-0.75f, -18f, 0f);
-        recoilMax = new Vector3(0.75f, -24f, 0f);
+        recoilMin = new Vector3(-1.25f, -25f, 0f);
+        recoilMax = new Vector3(1.25f, -32f, 0f);
 
-        kickbackAmount = 0.19f;
-        recoilKickAngle = 4.4f;
-        maxRecoilAngle = 14f;
-        recoilAngleRecoverySpeed = 15f;
+        kickbackAmount = 0.27f;
+        kickReturnDuration = 0.12f;
+        kickReturnExponent = 2.8f;
+        recoilKickAngle = 6.8f;
+        maxRecoilAngle = 18f;
+        recoilAngleRecoverySpeed = 13.5f;
+        fovKickAmount = 0.55f;
 
         useReloadAnimation = true;
         reloadRaiseFraction = 0.06f;

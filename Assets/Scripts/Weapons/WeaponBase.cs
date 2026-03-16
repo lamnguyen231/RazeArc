@@ -36,10 +36,29 @@ public abstract class WeaponBase : MonoBehaviour
     [Header("Gun Kickback")]
     public float kickbackAmount = 0.15f;
     public float kickbackRecoverySpeed = 8f;
+    public float kickReturnDuration = 0.12f;
+    public float kickReturnExponent = 2.2f;
     public Transform recoilPivot;
     public float recoilKickAngle = 3.5f;
     public float maxRecoilAngle = 12f;
     public float recoilAngleRecoverySpeed = 16f;
+
+    [Header("Camera Kick")]
+    public float fovKickAmount = 0.35f;
+
+    [Header("Movement Bob")]
+    public bool useMovementBob = true;
+    public float bobFrequency = 9f;
+    public float bobSmoothing = 14f;
+    public Vector3 bobPositionAmplitude = new Vector3(0.012f, 0.016f, 0.01f);
+    public Vector3 bobRotationAmplitude = new Vector3(1.4f, 0.7f, 1.6f);
+    [Range(0f, 1f)]
+    public float aimBobMultiplier = 0.35f;
+    [Range(0f, 1f)]
+    public float firingBobMultiplier = 0.2f;
+    [Range(0f, 1f)]
+    public float reloadBobMultiplier = 0.08f;
+    public float firingBobSuppressDuration = 0.08f;
 
     [Header("Reload Animation")]
     public bool useReloadAnimation = true;
@@ -134,10 +153,18 @@ public abstract class WeaponBase : MonoBehaviour
     protected bool reloadPausedWhileHolstered = false;
     ReloadTriggerType reloadTriggerType = ReloadTriggerType.None;
     protected PlayerInventory playerInventory;
+    protected PlayerMovement playerMovement;
     bool ammoPoolInitialized;
     bool hasCachedPose;
     bool isEquipping;
     Coroutine equipCoroutine;
+    float kickOffsetImpulse;
+    float kickOffsetPeak;
+    float kickOffsetTimer;
+    float movementBobTimer;
+    float firingBobTimer;
+    Vector3 bobPositionCurrent;
+    Vector3 bobEulerCurrent;
 
     protected virtual void Awake()
     {
@@ -175,6 +202,12 @@ public abstract class WeaponBase : MonoBehaviour
         {
             // Weapons can live under a different branch than PlayerBody in this project.
             playerInventory = FindObjectOfType<PlayerInventory>();
+        }
+
+        playerMovement = GetComponentInParent<PlayerMovement>();
+        if (playerMovement == null)
+        {
+            playerMovement = FindObjectOfType<PlayerMovement>();
         }
 
         if (usesAmmo)
@@ -232,6 +265,13 @@ public abstract class WeaponBase : MonoBehaviour
         }
 
         isEquipping = false;
+        kickOffsetImpulse = 0f;
+        kickOffsetPeak = 0f;
+        kickOffsetTimer = 0f;
+        movementBobTimer = 0f;
+        firingBobTimer = 0f;
+        bobPositionCurrent = Vector3.zero;
+        bobEulerCurrent = Vector3.zero;
 
         if (isReloading)
         {
@@ -263,15 +303,20 @@ public abstract class WeaponBase : MonoBehaviour
         {
             if (!isReloading)
             {
+                UpdateFireKickAndBob();
+
+                Quaternion bobRotation =
+                    originalLocalRotation * Quaternion.Euler(bobEulerCurrent);
+
                 transform.localPosition = Vector3.Lerp(
                     transform.localPosition,
-                    originalLocalPosition,
+                    originalLocalPosition + bobPositionCurrent - (Vector3.forward * kickOffsetImpulse),
                     kickbackRecoverySpeed * Time.deltaTime
                 );
 
                 transform.localRotation = Quaternion.Slerp(
                     transform.localRotation,
-                    originalLocalRotation,
+                    bobRotation,
                     kickbackRecoverySpeed * Time.deltaTime
                 );
             }
@@ -367,9 +412,10 @@ public abstract class WeaponBase : MonoBehaviour
                     );
 
                     cameraRecoil.AddRecoil(recoil);
+                    cameraRecoil.AddFovKick(fovKickAmount);
                 }
 
-                transform.localPosition -= Vector3.forward * kickbackAmount;
+                TriggerFireKick();
                 currentRecoilAngle = Mathf.Clamp(
                     currentRecoilAngle + recoilKickAngle,
                     0f,
@@ -462,6 +508,135 @@ public abstract class WeaponBase : MonoBehaviour
 
         ResetReloadState();
         Debug.Log("Reloaded. Ammo: " + currentAmmo + "/" + GetReserveAmmoCount());
+    }
+
+    void UpdateFireKickAndBob()
+    {
+        UpdateFireKick();
+        UpdateMovementBob();
+    }
+
+    void TriggerFireKick()
+    {
+        float maxKick = Mathf.Max(0.001f, kickbackAmount * 2.25f);
+        kickOffsetPeak = Mathf.Clamp(kickOffsetImpulse + kickbackAmount, 0f, maxKick);
+        kickOffsetImpulse = kickOffsetPeak;
+        kickOffsetTimer = 0f;
+        firingBobTimer = Mathf.Max(firingBobTimer, firingBobSuppressDuration);
+    }
+
+    void UpdateFireKick()
+    {
+        if (firingBobTimer > 0f)
+        {
+            firingBobTimer = Mathf.Max(0f, firingBobTimer - Time.deltaTime);
+        }
+
+        if (kickOffsetImpulse <= 0f)
+        {
+            return;
+        }
+
+        float duration = Mathf.Max(0.01f, kickReturnDuration);
+        float exponent = Mathf.Max(0.1f, kickReturnExponent);
+
+        kickOffsetTimer += Time.deltaTime;
+        float t = Mathf.Clamp01(kickOffsetTimer / duration);
+        float curveValue = Mathf.Pow(1f - t, exponent);
+        kickOffsetImpulse = Mathf.Max(0f, kickOffsetPeak * curveValue);
+
+        if (t >= 1f || kickOffsetImpulse <= 0.0001f)
+        {
+            kickOffsetImpulse = 0f;
+            kickOffsetPeak = 0f;
+        }
+    }
+
+    void UpdateMovementBob()
+    {
+        if (!useMovementBob)
+        {
+            bobPositionCurrent = Vector3.zero;
+            bobEulerCurrent = Vector3.zero;
+            return;
+        }
+
+        float horizontalSpeed = 0f;
+        bool isGrounded = true;
+
+        if (playerMovement != null && playerMovement.bodyController != null)
+        {
+            Vector3 controllerVelocity = playerMovement.bodyController.velocity;
+            horizontalSpeed = new Vector2(controllerVelocity.x, controllerVelocity.z).magnitude;
+            isGrounded = playerMovement.bodyController.isGrounded;
+        }
+        else
+        {
+            float x = Input.GetAxisRaw("Horizontal");
+            float z = Input.GetAxisRaw("Vertical");
+            horizontalSpeed = new Vector2(x, z).magnitude * 6f;
+        }
+
+        float speedDenominator = playerMovement != null
+            ? Mathf.Max(0.01f, playerMovement.moveSpeed)
+            : 6f;
+
+        float speed01 = Mathf.Clamp01(horizontalSpeed / speedDenominator);
+        float movementWeight = (isGrounded && speed01 > 0.01f) ? speed01 : 0f;
+
+        float bobMultiplier = 1f;
+        if (Input.GetMouseButton(1))
+        {
+            bobMultiplier *= Mathf.Clamp01(aimBobMultiplier);
+        }
+        if (isReloading)
+        {
+            bobMultiplier *= Mathf.Clamp01(reloadBobMultiplier);
+        }
+        if (firingBobTimer > 0f)
+        {
+            bobMultiplier *= Mathf.Clamp01(firingBobMultiplier);
+        }
+
+        Vector3 bobPositionTarget = Vector3.zero;
+        Vector3 bobEulerTarget = Vector3.zero;
+
+        if (movementWeight > 0f)
+        {
+            movementBobTimer += Time.deltaTime * bobFrequency * Mathf.Lerp(0.75f, 1.35f, movementWeight);
+
+            float sinA = Mathf.Sin(movementBobTimer);
+            float sinB = Mathf.Sin(movementBobTimer * 2f);
+            float cosA = Mathf.Cos(movementBobTimer);
+
+            bobPositionTarget = new Vector3(
+                sinA * bobPositionAmplitude.x,
+                (sinB * 0.5f + 0.5f) * bobPositionAmplitude.y,
+                cosA * bobPositionAmplitude.z
+            ) * (movementWeight * bobMultiplier);
+
+            bobEulerTarget = new Vector3(
+                sinB * bobRotationAmplitude.x,
+                cosA * bobRotationAmplitude.y,
+                sinA * bobRotationAmplitude.z
+            ) * (movementWeight * bobMultiplier);
+        }
+        else
+        {
+            movementBobTimer = 0f;
+        }
+
+        float smoothing = Mathf.Max(1f, bobSmoothing);
+        bobPositionCurrent = Vector3.Lerp(
+            bobPositionCurrent,
+            bobPositionTarget,
+            smoothing * Time.deltaTime
+        );
+        bobEulerCurrent = Vector3.Lerp(
+            bobEulerCurrent,
+            bobEulerTarget,
+            smoothing * Time.deltaTime
+        );
     }
 
     protected int GetReserveAmmoCount()
