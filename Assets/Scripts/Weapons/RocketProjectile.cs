@@ -32,6 +32,15 @@ public class RocketProjectile : MonoBehaviour
     public float explosionLightFadeDelay = 0.08f;
     public float explosionLightFadeDuration = 0.85f;
 
+    [Header("Explosion Audio")]
+    public AudioClip explosionClip;
+    [Range(0f, 1f)]
+    public float explosionVolume = 1f;
+    [Range(0f, 1f)]
+    public float explosionSpatialBlend = 1f;
+    public float explosionMinDistance = 3f;
+    public float explosionMaxDistance = 45f;
+
     [Header("Smoke Trail")]
     public bool useSmokeTrail = true;
     public Color smokeColor = new Color(0.4f, 0.4f, 0.4f, 0.7f);
@@ -163,6 +172,8 @@ public class RocketProjectile : MonoBehaviour
             }
         }
 
+        PlayExplosionSound(explosionPosition);
+
         SpawnExplosionEffect(explosionPosition);
 
         DetachAndFadeSmokeTrail();
@@ -198,6 +209,29 @@ public class RocketProjectile : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, explosionRadius);
+    }
+
+    void PlayExplosionSound(Vector3 explosionPosition)
+    {
+        if (explosionClip == null)
+        {
+            return;
+        }
+
+        GameObject audioObject = new GameObject("RocketExplosionAudio");
+        audioObject.transform.position = explosionPosition;
+
+        AudioSource source = audioObject.AddComponent<AudioSource>();
+        source.clip = explosionClip;
+        source.volume = Mathf.Clamp01(explosionVolume);
+        source.spatialBlend = Mathf.Clamp01(explosionSpatialBlend);
+        source.minDistance = Mathf.Max(0.01f, explosionMinDistance);
+        source.maxDistance = Mathf.Max(source.minDistance, explosionMaxDistance);
+        source.rolloffMode = AudioRolloffMode.Linear;
+        source.playOnAwake = false;
+        source.Play();
+
+        Destroy(audioObject, explosionClip.length + 0.1f);
     }
 
     void CreateSmokeTrail()

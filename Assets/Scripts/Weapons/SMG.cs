@@ -23,24 +23,24 @@ public class SMG : WeaponBase
         isAutomatic = true;
         ammoType = AmmoType.SMG;
 
-        damage = 13.5f;
-        fireRate = 0.065f;
+        damage = 16f;
+        fireRate = 0.045f;
         range = 80f;
 
         magazineSize = 30;
         reserveAmmo = 60;
-        reloadTime = 2f;
+        reloadTime = 1.7f;
 
-        recoilMin = new Vector3(-0.3f, -20f, 0f);
-        recoilMax = new Vector3(0.3f, -30f, 0f);
+        recoilMin = new Vector3(-0.15f, -10f, 0f);
+        recoilMax = new Vector3(0.15f, -15f, 0f);
 
-        kickbackAmount = 0.15f;
+        kickbackAmount = 0.08f;
         kickReturnDuration = 0.09f;
         kickReturnExponent = 2f;
-        recoilKickAngle = 1.4f;
-        maxRecoilAngle = 5.5f;
+        recoilKickAngle = 0.7f;
+        maxRecoilAngle = 2.8f;
         recoilAngleRecoverySpeed = 24f;
-        fovKickAmount = 0.12f;
+        fovKickAmount = 0.06f;
 
         useReloadAnimation = true;
         reloadRaiseFraction = 0.055f;
@@ -57,6 +57,9 @@ public class SMG : WeaponBase
         muzzleFlashSpeed = 9f;
         muzzleFlashLightIntensity = 1.4f;
         muzzleFlashLightRange = 1.4f;
+
+        fireScreenShakeAmount = 0.06f;
+        fireScreenShakeDuration = 0.04f;
 
         currentSpread = baseSpread;
         lastSpreadUpdateTime = Time.time;
@@ -103,7 +106,14 @@ public class SMG : WeaponBase
             currentSpread - (spreadRecoverPerSecond * deltaTime)
         );
 
-        float spread = Mathf.Clamp(currentSpread, baseSpread, maxSpread);
+        // Apply crouch accuracy bonus
+        float spreadMultiplier = 1f;
+        if (playerMovement != null && playerMovement.IsCrouching())
+        {
+            spreadMultiplier = crouchAccuracyMultiplier;
+        }
+
+        float spread = Mathf.Clamp(currentSpread * spreadMultiplier, baseSpread * spreadMultiplier, maxSpread * spreadMultiplier);
         float yaw = Random.Range(-spread, spread);
         float pitch = Random.Range(-spread, spread);
 

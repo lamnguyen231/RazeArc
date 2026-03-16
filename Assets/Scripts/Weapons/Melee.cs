@@ -9,6 +9,11 @@ public class Melee : WeaponBase
     public float meleeRadius = 0.5f;
     public LayerMask hitMask;
 
+    [Header("Melee Audio")]
+    public AudioClip slashClip;
+    [Range(0.3f, 1f)]
+    public float slashVolume = 0.8f;
+
     protected override void Awake()
     {
         base.Awake();
@@ -46,6 +51,7 @@ public class Melee : WeaponBase
 
         HashSet<IDamageable> damagedTargets = new HashSet<IDamageable>();
         bool hitSomething = false;
+    PlaySlashSound();
 
         for (int i = 0; i < hits.Length; i++)
         {
@@ -84,6 +90,18 @@ public class Melee : WeaponBase
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(firePoint.position + firePoint.forward * meleeRange, meleeRadius);
+        }
+    }
+
+    void PlaySlashSound()
+    {
+        if (slashClip != null)
+        {
+            AudioSource source = GetComponent<AudioSource>();
+            if (source != null)
+            {
+                source.PlayOneShot(slashClip, slashVolume);
+            }
         }
     }
 }

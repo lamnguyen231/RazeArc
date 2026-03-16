@@ -30,6 +30,12 @@ public abstract class WeaponBase : MonoBehaviour
     public Vector3 recoilMin = new Vector3(-0.5f, -15f, 0f);
     public Vector3 recoilMax = new Vector3(0.5f, -20f, 0f);
 
+    [Header("Crouch Accuracy")]
+    [Range(0.1f, 1f)]
+    public float crouchAccuracyMultiplier = 0.5f;
+    [Range(0.1f, 1f)]
+    public float crouchRecoilMultiplier = 0.4f;
+
     [Header("Motion Type")]
     public WeaponMotionType motionType = WeaponMotionType.Gun;
 
@@ -117,6 +123,21 @@ public abstract class WeaponBase : MonoBehaviour
     public float muzzleFlashLightRange = 4f;
     public float muzzleFlashLightDuration = 0.09f;
 
+    [Header("Screen Shake")]
+    public float fireScreenShakeAmount = 0.08f;
+    public float fireScreenShakeDuration = 0.06f;
+
+    [Header("Audio Settings")]
+    public AudioClip fireClip;
+    public AudioClip reloadClip;
+    public AudioClip equipClip;
+    [Range(0.3f, 1f)]
+    public float fireVolume = 0.8f;
+    [Range(0.3f, 1f)]
+    public float reloadVolume = 0.6f;
+    [Range(0.3f, 1f)]
+    public float equipVolume = 0.7f;
+
     [Header("Impact Decals")]
     public bool useImpactDecals = true;
     public int maxImpactDecals = 120;
@@ -168,6 +189,7 @@ public abstract class WeaponBase : MonoBehaviour
     public CameraRecoil cameraRecoil;
 
     [Header("Gun Muzzle Compensation")]
+       AudioSource audioSource;
     public Vector3 muzzleLocalOffset = new Vector3(0f, 0f, 0.2f);
 
     protected float lastShotTime = -999f;
@@ -253,6 +275,14 @@ public abstract class WeaponBase : MonoBehaviour
             recoilPivot = transform;
         }
 
+        // Get or create AudioSource
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false;
+
         CacheOriginalPose();
     }
 
@@ -273,13 +303,6 @@ public abstract class WeaponBase : MonoBehaviour
         landingPunchTimer = 0f;
         landingPunchStrength = 0f;
 
-        if (reloadPausedWhileHolstered && reloadTriggerType == ReloadTriggerType.AutoEmpty)
-        {
-            isReloading = true;
-            reloadPausedWhileHolstered = false;
-            Debug.Log("Resuming auto reload...");
-        }
-
         if (useEquipAnimation && motionType == WeaponMotionType.Gun)
         {
             if (equipCoroutine != null)
@@ -288,6 +311,7 @@ public abstract class WeaponBase : MonoBehaviour
             }
 
             equipCoroutine = StartCoroutine(PlayEquipAnimation());
+            PlayEquipSound();
         }
         else
         {
@@ -427,7 +451,7 @@ public abstract class WeaponBase : MonoBehaviour
         }
     }
 
-    protected void TryFire()
+    void TryFire()
     {
         if (isReloading)
         {
@@ -461,9 +485,16 @@ public abstract class WeaponBase : MonoBehaviour
             {
                 if (cameraRecoil != null)
                 {
+                    // Apply crouch accuracy bonus
+                    float recoilMultiplier = 1f;
+                    if (playerMovement != null && playerMovement.IsCrouching())
+                    {
+                        recoilMultiplier = crouchRecoilMultiplier;
+                    }
+
                     Vector3 recoil = new Vector3(
-                        Random.Range(recoilMin.x, recoilMax.x),
-                        Random.Range(recoilMin.y, recoilMax.y),
+                        Random.Range(recoilMin.x * recoilMultiplier, recoilMax.x * recoilMultiplier),
+                        Random.Range(recoilMin.y * recoilMultiplier, recoilMax.y * recoilMultiplier),
                         0f
                     );
 
@@ -472,13 +503,27 @@ public abstract class WeaponBase : MonoBehaviour
                 }
 
                 TriggerFireKick();
+                
+                // Apply crouch accuracy multiplier to recoil angle
+                float recoilAngleMultiplier = 1f;
+                if (playerMovement != null && playerMovement.IsCrouching())
+                {
+                    recoilAngleMultiplier = crouchRecoilMultiplier;
+                }
+                
                 currentRecoilAngle = Mathf.Clamp(
-                    currentRecoilAngle + recoilKickAngle,
+                    currentRecoilAngle + (recoilKickAngle * recoilAngleMultiplier),
                     0f,
                     maxRecoilAngle
                 );
 
                 SpawnMuzzleFlash();
+
+                // Add screen shake on fire
+                if (cameraRecoil != null)
+                {
+                    cameraRecoil.AddScreenShake(fireScreenShakeAmount, fireScreenShakeDuration);
+                }
             }
             else if (motionType == WeaponMotionType.Melee)
             {
@@ -487,6 +532,8 @@ public abstract class WeaponBase : MonoBehaviour
                     StartCoroutine(PerformSwing());
                 }
             }
+
+            PlayFireSound();
 
 
             Fire();
@@ -525,6 +572,7 @@ public abstract class WeaponBase : MonoBehaviour
         reloadPausedWhileHolstered = false;
         reloadTriggerType = triggerType;
         ClearFireKickState();
+        PlayReloadSound();
 
         if (motionType == WeaponMotionType.Gun && useReloadAnimation)
         {
@@ -583,8 +631,14 @@ public abstract class WeaponBase : MonoBehaviour
 
     void TriggerFireKick()
     {
-        float maxKick = Mathf.Max(0.001f, kickbackAmount * 2.25f);
-        kickOffsetPeak = Mathf.Clamp(kickOffsetImpulse + kickbackAmount, 0f, maxKick);
+        float kickback = kickbackAmount;
+        if (playerMovement != null && playerMovement.IsCrouching())
+        {
+            kickback *= crouchRecoilMultiplier;
+        }
+        
+        float maxKick = Mathf.Max(0.001f, kickback * 2.25f);
+        kickOffsetPeak = Mathf.Clamp(kickOffsetImpulse + kickback, 0f, maxKick);
         kickOffsetImpulse = kickOffsetPeak;
         kickOffsetTimer = 0f;
         firingBobTimer = Mathf.Max(firingBobTimer, firingBobSuppressDuration);
@@ -1683,6 +1737,30 @@ public abstract class WeaponBase : MonoBehaviour
         transform.localPosition = originalLocalPosition;
         isEquipping = false;
         equipCoroutine = null;
+    }
+
+    protected void PlayFireSound()
+    {
+        if (audioSource != null && fireClip != null)
+        {
+            audioSource.PlayOneShot(fireClip, fireVolume);
+        }
+    }
+
+    protected void PlayReloadSound()
+    {
+        if (audioSource != null && reloadClip != null)
+        {
+            audioSource.PlayOneShot(reloadClip, reloadVolume);
+        }
+    }
+
+    protected void PlayEquipSound()
+    {
+        if (audioSource != null && equipClip != null)
+        {
+            audioSource.PlayOneShot(equipClip, equipVolume);
+        }
     }
 
     protected abstract void Fire();

@@ -146,6 +146,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05035d39712a09343aa874b34978f13e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosionForce: 30
+  upwardsModifier: 1.5
+  minDamageMultiplierAtEdge: 0.5
+  playerSelfDamageMultiplier: 0.6
+  maxSelfDamage: 85
+  playerExplosionForceMultiplier: 2.6
+  rocketJumpCenterBonus: 1.95
+  minPlayerForceFalloff: 0.45
+  explosionEffectPrefab: {fileID: 0}
+  useRuntimeExplosionEffect: 1
+  explosionCoreColor: {r: 1, g: 0.75, b: 0.15, a: 1}
+  explosionSmokeColor: {r: 0.25, g: 0.25, b: 0.25, a: 0.8}
+  explosionVisualScale: 1.2
+  explosionDuration: 1.8
+  fireBurstDuration: 0.9
+  fireBurstMinLifetime: 0.45
+  fireBurstMaxLifetime: 1.1
+  explosionLightIntensity: 5.5
+  explosionLightFadeDelay: 0.08
+  explosionLightFadeDuration: 0.85
+  explosionClip: {fileID: 8300000, guid: fa3b37786cd61e143a6322798f17b288, type: 3}
+  explosionVolume: 1
+  explosionSpatialBlend: 1
+  explosionMinDistance: 3
+  explosionMaxDistance: 45
+  useSmokeTrail: 1
+  smokeColor: {r: 0.4, g: 0.4, b: 0.4, a: 0.7}
+  smokeLifetime: 2.4
+  smokeStartSize: 0.18
+  smokeEndSize: 0.7
+  smokeEmissionRate: 45
+  smokeLingerDuration: 3.5
   speed: 0
   damage: 0
   explosionRadius: 5

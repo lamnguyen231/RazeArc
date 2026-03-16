@@ -12,13 +12,13 @@ public class Pistol : WeaponBase
 
         // Weapon Identity
         ammoType = AmmoType.Pistol;
-        damage = 34f;
-        fireRate = 0.36f;
+        damage = 40f;
+        fireRate = 0.25f;
         range = 100f;
 
         magazineSize = 12;
         reserveAmmo = 24;
-        reloadTime = 1.5f;
+        reloadTime = 1.3f;
 
         recoilMin = new Vector3(-0.72f, -16f, 0f);
         recoilMax = new Vector3(0.72f, -22f, 0f);
@@ -46,6 +46,9 @@ public class Pistol : WeaponBase
         muzzleFlashSpeed = 7f;
         muzzleFlashLightIntensity = 2f;
         muzzleFlashLightRange = 1.8f;
+
+        fireScreenShakeAmount = 0.12f;
+        fireScreenShakeDuration = 0.08f;
     }
 
     protected override void Fire()

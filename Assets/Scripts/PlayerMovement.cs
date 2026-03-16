@@ -13,8 +13,9 @@ public class PlayerMovement : MonoBehaviour
     public float cameraOffsetY = -0.35f;
 
     [Header("Movement")]
-    public float moveSpeed = 6f;
-    public float gravity = -20f;
+    public float moveSpeed = 8.5f;
+    public float gravity = -25f;
+    public float airAcceleration = 12f;
     public float explosionHorizontalDamping = 4.5f;
     public float explosionUpwardDamping = 1.25f;
     public float rocketJumpVerticalBoostMultiplier = 1.45f;
@@ -22,14 +23,16 @@ public class PlayerMovement : MonoBehaviour
     Vector3 explosionVelocity;
 
     [Header("Jumping")]
-    public float jumpForce = 8f;
+    public float jumpForce = 9f;
     public int maxJumps = 2;
     int jumpCount = 0;
 
     [Header("Crouching")]
     public float standingHeight = 2f;
     public float crouchingHeight = 1f;
-    public float crouchSpeed = 3f;
+    public float crouchSpeed = 5f;
+    
+    bool isCrouching = false;
 
 
     // Start is called before the first frame update
@@ -59,11 +62,27 @@ public class PlayerMovement : MonoBehaviour
 
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
-        Vector3 move = transform.right * x + transform.forward * z;
+        Vector3 moveDirection = transform.right * x + transform.forward * z;
+
+        // Apply air acceleration when airborne
+        if (!isGrounded && moveDirection.sqrMagnitude > 0.01f)
+        {
+            Vector3 horizontalVelocity = new Vector3(velocity.x, 0f, velocity.z);
+            Vector3 moveAccel = moveDirection.normalized * airAcceleration;
+            horizontalVelocity = Vector3.Lerp(
+                horizontalVelocity,
+                horizontalVelocity + moveAccel * Time.deltaTime,
+                Mathf.Clamp01(Time.deltaTime * 6f)
+            );
+            velocity.x = horizontalVelocity.x;
+            velocity.z = horizontalVelocity.z;
+        }
 
         float currentSpeed = moveSpeed;
 
-        if (Input.GetKey(KeyCode.LeftControl))
+        isCrouching = Input.GetKey(KeyCode.LeftControl);
+        
+        if (isCrouching)
         {
             bodyController.height = crouchingHeight;
             bodyController.center = new Vector3(0, crouchingHeight / 2f, 0);
@@ -94,7 +113,7 @@ public class PlayerMovement : MonoBehaviour
 
         // Combine movement
         Vector3 finalMove =
-            move * currentSpeed +
+            moveDirection * currentSpeed +
             explosionVelocity +
             velocity;
 
@@ -157,5 +176,10 @@ public class PlayerMovement : MonoBehaviour
         );
 
         explosionVelocity += push;
+    }
+
+    public bool IsCrouching()
+    {
+        return isCrouching;
     }
 }

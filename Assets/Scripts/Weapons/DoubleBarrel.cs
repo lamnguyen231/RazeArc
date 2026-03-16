@@ -15,13 +15,13 @@ public class DoubleBarrel : WeaponBase
 
         // Weapon identity
         ammoType = AmmoType.Shell;
-        damage = 12f;
-        fireRate = 1.2f;
+        damage = 14f;
+        fireRate = 0.9f;
         range = 34f;
 
         magazineSize = 2;
         reserveAmmo = 10;
-        reloadTime = 2.5f;
+        reloadTime = 2.1f;
 
         recoilMin = new Vector3(-6f, -88f, 0f);
         recoilMax = new Vector3(6f, -110f, 0f);
@@ -48,6 +48,11 @@ public class DoubleBarrel : WeaponBase
         muzzleFlashDuration = 0.06f;
         muzzleFlashSize = 0.28f;
         muzzleFlashSpeed = 10f;
+        muzzleFlashLightIntensity = 3f;
+        muzzleFlashLightRange = 2.5f;
+
+        fireScreenShakeAmount = 0.24f;
+        fireScreenShakeDuration = 0.12f;
         muzzleFlashLightIntensity = 3.8f;
         muzzleFlashLightRange = 3.2f;
 

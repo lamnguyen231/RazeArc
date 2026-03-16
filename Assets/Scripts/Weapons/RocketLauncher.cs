@@ -17,12 +17,12 @@ public class RocketLauncher : WeaponBase
         ammoType = AmmoType.Rocket;
 
         damage = 130f;
-        fireRate = 1.45f;
+        fireRate = 1.0f;
         range = 180f;
 
         magazineSize = 1;
         reserveAmmo = 2;
-        reloadTime = 2.5f;
+        reloadTime = 2.1f;
 
         recoilMin = new Vector3(-2f, -100f, 0f);
         recoilMax = new Vector3(2f, -120f, 0f);
@@ -48,6 +48,9 @@ public class RocketLauncher : WeaponBase
         muzzleFlashSpeed = 11f;
         muzzleFlashLightIntensity = 4.5f;
         muzzleFlashLightRange = 3.8f;
+
+        fireScreenShakeAmount = 0.3f;
+        fireScreenShakeDuration = 0.15f;
 
         // Lift and push muzzle FX to the launcher tube opening.
         muzzleLocalOffset = new Vector3(-0.1f, 0.08f, -0.6f);

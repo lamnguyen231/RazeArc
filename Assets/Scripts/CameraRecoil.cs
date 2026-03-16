@@ -18,6 +18,13 @@ public class CameraRecoil : MonoBehaviour
     public float fovKickSnappiness = 14f;
     public float maxFovKick = 8f;
 
+    [Header("Screen Shake")]
+    public float shakeSpeed = 18f;
+    Vector3 currentShake;
+    Vector3 targetShake;
+    float shakeTimer;
+    float shakeDuration;
+
     Vector3 currentRecoil;
     Vector3 targetRecoil;
     float baseFov;
@@ -63,6 +70,31 @@ public class CameraRecoil : MonoBehaviour
             fovKickSnappiness * Time.deltaTime
         );
 
+        // Update screen shake
+        if (shakeDuration > 0f)
+        {
+            shakeTimer -= Time.deltaTime;
+            if (shakeTimer <= 0f)
+            {
+                shakeTimer = 0.016f;
+                targetShake = new Vector3(
+                    Random.Range(-1f, 1f),
+                    Random.Range(-1f, 1f),
+                    0f
+                ) * (shakeDuration / Mathf.Max(0.01f, shakeDuration));
+            }
+            shakeDuration = Mathf.Max(0f, shakeDuration - Time.deltaTime);
+
+            if (shakeDuration <= 0f)
+                targetShake = Vector3.zero;
+        }
+
+        currentShake = Vector3.Lerp(
+            currentShake,
+            targetShake,
+            shakeSpeed * Time.deltaTime
+        );
+
         if (recoilCamera != null)
         {
             recoilCamera.fieldOfView = baseFov + currentFovKick;
@@ -82,10 +114,20 @@ public class CameraRecoil : MonoBehaviour
         targetFovKick = Mathf.Clamp(targetFovKick + safeKick, 0f, Mathf.Max(0f, maxFovKick));
     }
 
+    public void AddScreenShake(float amount, float duration = 0.1f)
+    {
+        shakeDuration = Mathf.Max(shakeDuration, duration);
+        targetShake = new Vector3(
+            Random.Range(-1f, 1f),
+            Random.Range(-1f, 1f),
+            0f
+        ) * amount;
+    }
+
     void ApplyRotation()
     {
-        float finalPitch = playerLook.Pitch + currentRecoil.y;
-        float finalYaw = currentRecoil.x;
+        float finalPitch = playerLook.Pitch + currentRecoil.y + currentShake.y;
+        float finalYaw = currentRecoil.x + currentShake.x;
 
         cameraTransform.localRotation = Quaternion.Euler(
             finalPitch,
