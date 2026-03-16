@@ -6,7 +6,7 @@ public class RocketLauncher : WeaponBase
 {
     [Header("Rocket Settings")]
     public GameObject rocketPrefab;
-    public float rocketSpeed = 30f;
+    public float rocketSpeed = 24f;
 
     protected override void Awake()
     {
@@ -16,9 +16,9 @@ public class RocketLauncher : WeaponBase
         isAutomatic = false;
         ammoType = AmmoType.Rocket;
 
-        damage = 100f;
-        fireRate = 1.2f;
-        range = 200f;
+        damage = 130f;
+        fireRate = 1.45f;
+        range = 180f;
 
         magazineSize = 1;
         reserveAmmo = 2;

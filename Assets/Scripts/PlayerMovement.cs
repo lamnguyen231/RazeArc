@@ -15,6 +15,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement")]
     public float moveSpeed = 6f;
     public float gravity = -20f;
+    public float explosionHorizontalDamping = 4.5f;
+    public float explosionUpwardDamping = 1.25f;
+    public float rocketJumpVerticalBoostMultiplier = 1.45f;
     Vector3 velocity;
     Vector3 explosionVelocity;
 
@@ -98,7 +101,32 @@ public class PlayerMovement : MonoBehaviour
         bodyController.Move(finalMove * Time.deltaTime);
 
         // Decay explosion pushback
-        explosionVelocity = Vector3.Lerp(explosionVelocity, Vector3.zero, 5f * Time.deltaTime);
+        Vector3 horizontalExplosionVelocity = new Vector3(
+            explosionVelocity.x,
+            0f,
+            explosionVelocity.z
+        );
+        horizontalExplosionVelocity = Vector3.Lerp(
+            horizontalExplosionVelocity,
+            Vector3.zero,
+            Mathf.Max(0f, explosionHorizontalDamping) * Time.deltaTime
+        );
+
+        float verticalExplosionVelocity = explosionVelocity.y;
+        float verticalDamping = verticalExplosionVelocity > 0f
+            ? Mathf.Max(0f, explosionUpwardDamping)
+            : Mathf.Max(0f, explosionHorizontalDamping);
+        verticalExplosionVelocity = Mathf.MoveTowards(
+            verticalExplosionVelocity,
+            0f,
+            verticalDamping * Time.deltaTime
+        );
+
+        explosionVelocity = new Vector3(
+            horizontalExplosionVelocity.x,
+            verticalExplosionVelocity,
+            horizontalExplosionVelocity.z
+        );
     }
 
     public void AddExplosionForce(Vector3 explosionPosition, float force, float radius)
@@ -114,10 +142,19 @@ public class PlayerMovement : MonoBehaviour
 
         float falloff = 1f - (distance / radius);
 
+        // Point-blank rocket jumps can produce near-zero horizontal direction.
+        if (direction.sqrMagnitude < 0.0001f)
+        {
+            direction = transform.up;
+        }
+
         Vector3 push = direction.normalized * force * falloff;
 
         // Strong vertical boost
-        push.y = Mathf.Max(push.y, force * 0.8f * falloff);
+        push.y = Mathf.Max(
+            push.y,
+            force * Mathf.Max(0f, rocketJumpVerticalBoostMultiplier) * falloff
+        );
 
         explosionVelocity += push;
     }

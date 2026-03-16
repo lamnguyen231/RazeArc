@@ -12,24 +12,24 @@ public class Pistol : WeaponBase
 
         // Weapon Identity
         ammoType = AmmoType.Pistol;
-        damage = 25f;
-        fireRate = 0.4f;
+        damage = 34f;
+        fireRate = 0.36f;
         range = 100f;
 
         magazineSize = 12;
         reserveAmmo = 24;
         reloadTime = 1.5f;
 
-        recoilMin = new Vector3(-1.25f, -25f, 0f);
-        recoilMax = new Vector3(1.25f, -32f, 0f);
+        recoilMin = new Vector3(-0.72f, -16f, 0f);
+        recoilMax = new Vector3(0.72f, -22f, 0f);
 
-        kickbackAmount = 0.27f;
-        kickReturnDuration = 0.12f;
-        kickReturnExponent = 2.8f;
-        recoilKickAngle = 6.8f;
-        maxRecoilAngle = 18f;
-        recoilAngleRecoverySpeed = 13.5f;
-        fovKickAmount = 0.55f;
+        kickbackAmount = 0.24f;
+        kickReturnDuration = 0.11f;
+        kickReturnExponent = 2.35f;
+        recoilKickAngle = 4.9f;
+        maxRecoilAngle = 14f;
+        recoilAngleRecoverySpeed = 16f;
+        fovKickAmount = 0.42f;
 
         useReloadAnimation = true;
         reloadRaiseFraction = 0.06f;

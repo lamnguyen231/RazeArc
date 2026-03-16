@@ -5,8 +5,8 @@ using UnityEngine;
 public class DoubleBarrel : WeaponBase
 {
     [Header("Shotgun Settings")]
-    public int pelletCount = 10;
-    public float spreadAngle = 5f;
+    public int pelletCount = 14;
+    public float spreadAngle = 6.5f;
     public LayerMask shootMask;
 
     protected override void Awake()
@@ -15,9 +15,9 @@ public class DoubleBarrel : WeaponBase
 
         // Weapon identity
         ammoType = AmmoType.Shell;
-        damage = 10f;
-        fireRate = 0.8f;
-        range = 50f;
+        damage = 12f;
+        fireRate = 1.2f;
+        range = 34f;
 
         magazineSize = 2;
         reserveAmmo = 10;

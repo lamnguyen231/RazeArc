@@ -5,8 +5,18 @@ using UnityEngine;
 public class RocketProjectile : MonoBehaviour
 {
     [Header("Explosion Force")]
-    public float explosionForce = 20f;
+    public float explosionForce = 30f;
     public float upwardsModifier = 1.5f;
+
+    [Header("Explosion Damage")]
+    public float minDamageMultiplierAtEdge = 0.5f;
+    public float playerSelfDamageMultiplier = 0.6f;
+    public float maxSelfDamage = 85f;
+
+    [Header("Rocket Jump")]
+    public float playerExplosionForceMultiplier = 2.6f;
+    public float rocketJumpCenterBonus = 1.95f;
+    public float minPlayerForceFalloff = 0.45f;
 
     [Header("Explosion VFX")]
     public GameObject explosionEffectPrefab;
@@ -34,7 +44,7 @@ public class RocketProjectile : MonoBehaviour
 
     public float speed;
     public float damage;
-    public float explosionRadius = 5f;
+    public float explosionRadius = 7.2f;
 
     public LayerMask damageMask;
 
@@ -86,19 +96,70 @@ public class RocketProjectile : MonoBehaviour
         Vector3 explosionPosition = transform.position;
 
         Collider[] hits = Physics.OverlapSphere(explosionPosition, explosionRadius);
+        HashSet<IDamageable> damagedTargets = new HashSet<IDamageable>();
+        HashSet<PlayerMovement> pushedPlayers = new HashSet<PlayerMovement>();
 
         foreach (Collider hit in hits)
         {
-            // Damage
-            if (hit.TryGetComponent<IDamageable>(out var damageable))
+            if (hit == null)
             {
-                damageable.TakeDamage(damage);
+                continue;
+            }
+
+            Vector3 closestPoint = GetSafeClosestPoint(hit, explosionPosition);
+            float distance = Vector3.Distance(explosionPosition, closestPoint);
+            float normalizedDistance = Mathf.Clamp01(distance / Mathf.Max(0.01f, explosionRadius));
+            float falloffMultiplier = Mathf.Lerp(
+                1f,
+                Mathf.Clamp01(minDamageMultiplierAtEdge),
+                normalizedDistance
+            );
+
+            // Damage
+            IDamageable damageable =
+                hit.GetComponent<IDamageable>()
+                ?? hit.GetComponentInParent<IDamageable>();
+
+            if (damageable != null && damagedTargets.Add(damageable))
+            {
+                float finalDamage = damage * falloffMultiplier;
+                if (damageable is PlayerInventory)
+                {
+                    finalDamage *= Mathf.Max(0f, playerSelfDamageMultiplier);
+                    finalDamage = Mathf.Min(finalDamage, Mathf.Max(0f, maxSelfDamage));
+                }
+
+                damageable.TakeDamage(finalDamage);
             }
 
             // Player pushback
-            if (hit.TryGetComponent<PlayerMovement>(out var player))
+            PlayerMovement player =
+                hit.GetComponent<PlayerMovement>()
+                ?? hit.GetComponentInParent<PlayerMovement>();
+
+            if (player != null && pushedPlayers.Add(player))
             {
-                player.AddExplosionForce(explosionPosition, 20f, explosionRadius);
+                float distanceForceMultiplier = Mathf.Lerp(
+                    1f,
+                    Mathf.Clamp01(minPlayerForceFalloff),
+                    normalizedDistance
+                );
+
+                // Close explosions should provide strong lift for intentional rocket jumps.
+                float centerBonus = Mathf.Lerp(
+                    Mathf.Max(1f, rocketJumpCenterBonus),
+                    1f,
+                    normalizedDistance
+                );
+
+                player.AddExplosionForce(
+                    explosionPosition,
+                    explosionForce
+                        * Mathf.Max(1f, playerExplosionForceMultiplier)
+                        * distanceForceMultiplier
+                        * centerBonus,
+                    explosionRadius
+                );
             }
         }
 
@@ -107,6 +168,30 @@ public class RocketProjectile : MonoBehaviour
         DetachAndFadeSmokeTrail();
 
         Destroy(gameObject);
+    }
+
+    Vector3 GetSafeClosestPoint(Collider hit, Vector3 origin)
+    {
+        if (hit == null)
+        {
+            return origin;
+        }
+
+        // Non-convex mesh colliders throw on ClosestPoint; bounds fallback is stable.
+        MeshCollider meshCollider = hit as MeshCollider;
+        if (meshCollider != null && !meshCollider.convex)
+        {
+            return meshCollider.bounds.ClosestPoint(origin);
+        }
+
+        try
+        {
+            return hit.ClosestPoint(origin);
+        }
+        catch (UnityException)
+        {
+            return hit.bounds.ClosestPoint(origin);
+        }
     }
 
     void OnDrawGizmos()

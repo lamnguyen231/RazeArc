@@ -6,6 +6,15 @@ public class SMG : WeaponBase
 {
     public LayerMask shootMask;
 
+    [Header("Dynamic Spread")]
+    public float baseSpread = 0.75f;
+    public float maxSpread = 5.25f;
+    public float spreadIncreasePerShot = 0.45f;
+    public float spreadRecoverPerSecond = 3.8f;
+
+    float currentSpread;
+    float lastSpreadUpdateTime;
+
     protected override void Awake()
     {
         base.Awake();
@@ -14,8 +23,8 @@ public class SMG : WeaponBase
         isAutomatic = true;
         ammoType = AmmoType.SMG;
 
-        damage = 12f;
-        fireRate = 0.08f;
+        damage = 13.5f;
+        fireRate = 0.065f;
         range = 80f;
 
         magazineSize = 30;
@@ -48,6 +57,9 @@ public class SMG : WeaponBase
         muzzleFlashSpeed = 9f;
         muzzleFlashLightIntensity = 1.4f;
         muzzleFlashLightRange = 1.4f;
+
+        currentSpread = baseSpread;
+        lastSpreadUpdateTime = Time.time;
     }
 
     protected override void Fire()
@@ -82,9 +94,24 @@ public class SMG : WeaponBase
 
     Vector3 ApplySpread(Vector3 baseDirection)
     {
-        float spread = 1.5f;
+        float now = Time.time;
+        float deltaTime = Mathf.Max(0f, now - lastSpreadUpdateTime);
+        lastSpreadUpdateTime = now;
+
+        currentSpread = Mathf.Max(
+            baseSpread,
+            currentSpread - (spreadRecoverPerSecond * deltaTime)
+        );
+
+        float spread = Mathf.Clamp(currentSpread, baseSpread, maxSpread);
         float yaw = Random.Range(-spread, spread);
         float pitch = Random.Range(-spread, spread);
+
+        currentSpread = Mathf.Clamp(
+            currentSpread + spreadIncreasePerShot,
+            baseSpread,
+            maxSpread
+        );
 
         return Quaternion.Euler(pitch, yaw, 0f) * baseDirection;
     }
