@@ -6,7 +6,7 @@ public class RocketLauncher : WeaponBase
 {
     [Header("Rocket Settings")]
     public GameObject rocketPrefab;
-    public float rocketSpeed = 30f;
+    public float rocketSpeed = 24f;
 
     protected override void Awake()
     {
@@ -16,9 +16,9 @@ public class RocketLauncher : WeaponBase
         isAutomatic = false;
         ammoType = AmmoType.Rocket;
 
-        damage = 100f;
-        fireRate = 1.2f;
-        range = 200f;
+        damage = 130f;
+        fireRate = 1.45f;
+        range = 180f;
 
         magazineSize = 1;
         reserveAmmo = 2;
@@ -27,10 +27,13 @@ public class RocketLauncher : WeaponBase
         recoilMin = new Vector3(-2f, -100f, 0f);
         recoilMax = new Vector3(2f, -120f, 0f);
 
-        kickbackAmount = 0.4f;
-        recoilKickAngle = 11f;
-        maxRecoilAngle = 30f;
-        recoilAngleRecoverySpeed = 12f;
+        kickbackAmount = 0.68f;
+        kickReturnDuration = 0.24f;
+        kickReturnExponent = 3.4f;
+        recoilKickAngle = 16f;
+        maxRecoilAngle = 38f;
+        recoilAngleRecoverySpeed = 9.5f;
+        fovKickAmount = 1.65f;
 
         useReloadAnimation = true;
         reloadTiltEuler = new Vector3(38f, 0f, 0f);

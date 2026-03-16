@@ -12,21 +12,24 @@ public class Pistol : WeaponBase
 
         // Weapon Identity
         ammoType = AmmoType.Pistol;
-        damage = 25f;
-        fireRate = 0.4f;
+        damage = 34f;
+        fireRate = 0.36f;
         range = 100f;
 
         magazineSize = 12;
         reserveAmmo = 24;
         reloadTime = 1.5f;
 
-        recoilMin = new Vector3(-0.75f, -18f, 0f);
-        recoilMax = new Vector3(0.75f, -24f, 0f);
+        recoilMin = new Vector3(-0.72f, -16f, 0f);
+        recoilMax = new Vector3(0.72f, -22f, 0f);
 
-        kickbackAmount = 0.19f;
-        recoilKickAngle = 4.4f;
+        kickbackAmount = 0.24f;
+        kickReturnDuration = 0.11f;
+        kickReturnExponent = 2.35f;
+        recoilKickAngle = 4.9f;
         maxRecoilAngle = 14f;
-        recoilAngleRecoverySpeed = 15f;
+        recoilAngleRecoverySpeed = 16f;
+        fovKickAmount = 0.42f;
 
         useReloadAnimation = true;
         reloadRaiseFraction = 0.06f;
@@ -59,6 +62,7 @@ public class Pistol : WeaponBase
         if (Physics.Raycast(ray, out hit, range, shootMask))
         {
             SpawnTracer(tracerStart, hit.point);
+            SpawnImpactDecal(hit);
 
             if (hit.collider.TryGetComponent<IDamageable>(out var damageable))
             {

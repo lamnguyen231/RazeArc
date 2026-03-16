@@ -5,8 +5,8 @@ using UnityEngine;
 public class DoubleBarrel : WeaponBase
 {
     [Header("Shotgun Settings")]
-    public int pelletCount = 10;
-    public float spreadAngle = 5f;
+    public int pelletCount = 14;
+    public float spreadAngle = 6.5f;
     public LayerMask shootMask;
 
     protected override void Awake()
@@ -15,22 +15,25 @@ public class DoubleBarrel : WeaponBase
 
         // Weapon identity
         ammoType = AmmoType.Shell;
-        damage = 10f;
-        fireRate = 0.8f;
-        range = 50f;
+        damage = 12f;
+        fireRate = 1.2f;
+        range = 34f;
 
         magazineSize = 2;
         reserveAmmo = 10;
         reloadTime = 2.5f;
 
-        recoilMin = new Vector3(-4f, -60f, 0f);
-        recoilMax = new Vector3(4f, -80f, 0f);
+        recoilMin = new Vector3(-6f, -88f, 0f);
+        recoilMax = new Vector3(6f, -110f, 0f);
 
-        kickbackAmount = 0.48f;
-        recoilKickAngle = 13f;
-        maxRecoilAngle = 40f;
-        kickbackRecoverySpeed = 5.5f;
-        recoilAngleRecoverySpeed = 9f;
+        kickbackAmount = 0.72f;
+        kickReturnDuration = 0.2f;
+        kickReturnExponent = 3.3f;
+        recoilKickAngle = 18f;
+        maxRecoilAngle = 52f;
+        kickbackRecoverySpeed = 4.6f;
+        recoilAngleRecoverySpeed = 7.4f;
+        fovKickAmount = 1.45f;
 
         useReloadAnimation = true;
         reloadRaiseFraction = 0.07f;
@@ -73,6 +76,8 @@ public class DoubleBarrel : WeaponBase
 
             if (Physics.Raycast(ray, out hit, range, shootMask))
             {
+                SpawnImpactDecal(hit);
+
                 if (!hitSomething)
                 {
                     tracerEndPoint = hit.point;
