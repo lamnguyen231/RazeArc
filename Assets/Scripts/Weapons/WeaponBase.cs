@@ -4,6 +4,13 @@ using UnityEngine;
 
 public abstract class WeaponBase : MonoBehaviour
 {
+    enum ReloadTriggerType
+    {
+        None,
+        Manual,
+        AutoEmpty,
+    }
+
     [Header("Weapon Behavior")]
     public bool usesAmmo = true;
 
@@ -99,8 +106,9 @@ public abstract class WeaponBase : MonoBehaviour
     protected int currentAmmo;
     protected bool isReloading = false;
 
-    protected bool reloadCancelledThisFrame = false;
-    protected Coroutine reloadCoroutine;
+    protected float reloadElapsed = 0f;
+    protected bool reloadPausedWhileHolstered = false;
+    ReloadTriggerType reloadTriggerType = ReloadTriggerType.None;
     protected PlayerInventory playerInventory;
     bool ammoPoolInitialized;
     bool hasCachedPose;
@@ -148,6 +156,13 @@ public abstract class WeaponBase : MonoBehaviour
     {
         CacheOriginalPose();
 
+        if (reloadPausedWhileHolstered && reloadTriggerType == ReloadTriggerType.AutoEmpty)
+        {
+            isReloading = true;
+            reloadPausedWhileHolstered = false;
+            Debug.Log("Resuming auto reload...");
+        }
+
         if (useEquipAnimation && motionType == WeaponMotionType.Gun)
         {
             if (equipCoroutine != null)
@@ -178,13 +193,30 @@ public abstract class WeaponBase : MonoBehaviour
         }
 
         isEquipping = false;
-        isReloading = false;
-        reloadCoroutine = null;
-        reloadCancelledThisFrame = false;
+
+        if (isReloading)
+        {
+            if (reloadTriggerType == ReloadTriggerType.AutoEmpty)
+            {
+                isReloading = false;
+                reloadPausedWhileHolstered = true;
+                ResetWeaponPoseAfterReloadStop();
+            }
+            else
+            {
+                CancelReload();
+            }
+        }
     }
 
     void Update()
     {
+        if (usesAmmo && !isReloading && !reloadPausedWhileHolstered && currentAmmo <= 0)
+        {
+            TryStartReload(ReloadTriggerType.AutoEmpty);
+        }
+
+        UpdateReloadState();
         HandleInput();
 
         if (motionType == WeaponMotionType.Gun && !isEquipping)
@@ -232,9 +264,9 @@ public abstract class WeaponBase : MonoBehaviour
             return;
         }
 
-        if (usesAmmo && Input.GetKeyDown(KeyCode.R) && !isReloading)
+        if (usesAmmo && Input.GetKeyDown(KeyCode.R))
         {
-            reloadCoroutine = StartCoroutine(Reload());
+            TryStartReload(ReloadTriggerType.Manual);
             return;
         }
 
@@ -258,21 +290,20 @@ public abstract class WeaponBase : MonoBehaviour
     {
         if (isReloading)
         {
-            CancelReload();
+            if (reloadTriggerType == ReloadTriggerType.Manual && currentAmmo > 0)
+            {
+                CancelReload();
+            }
+            else
+            {
+                return;
+            }
         }
 
         if (usesAmmo && currentAmmo <= 0)
         {
-            if (GetReserveAmmoCount() > 0 && !reloadCancelledThisFrame)
-            {
-                reloadCoroutine = StartCoroutine(Reload());
-            }
-            else
-            {
-                Debug.Log("Click! (Dry Fire)");
-            }
-
-            reloadCancelledThisFrame = false;
+            TryStartReload(ReloadTriggerType.AutoEmpty);
+            Debug.Log("Click! (Dry Fire)");
             return;
         }
 
@@ -317,28 +348,40 @@ public abstract class WeaponBase : MonoBehaviour
 
 
             Fire();
+
+            if (usesAmmo && currentAmmo <= 0)
+            {
+                TryStartReload(ReloadTriggerType.AutoEmpty);
+            }
         }
     }
 
-    protected IEnumerator Reload()
+    bool TryStartReload(ReloadTriggerType triggerType)
     {
         if (!usesAmmo)
         {
-            yield break; // This weapon doesn't use ammo
+            return false;
         }
 
-        if (currentAmmo == magazineSize)
+        if (isReloading)
         {
-            yield break; // Magazine is already full
+            return false;
+        }
+
+        if (currentAmmo >= magazineSize)
+        {
+            return false;
         }
 
         if (GetReserveAmmoCount() <= 0)
         {
-            yield break; // No reserve ammo to reload
+            return false;
         }
 
+        reloadElapsed = 0f;
         isReloading = true;
-        Debug.Log("Reloading...");
+        reloadPausedWhileHolstered = false;
+        reloadTriggerType = triggerType;
 
         if (motionType == WeaponMotionType.Gun && useReloadAnimation)
         {
@@ -347,20 +390,37 @@ public abstract class WeaponBase : MonoBehaviour
             {
                 recoilPivot.localRotation = originalRecoilPivotLocalRotation;
             }
-
-            yield return StartCoroutine(PlayReloadAnimation());
         }
-        else
+
+        Debug.Log(triggerType == ReloadTriggerType.AutoEmpty ? "Auto reloading..." : "Reloading...");
+        return true;
+    }
+
+    void UpdateReloadState()
+    {
+        if (!isReloading)
         {
-            yield return new WaitForSeconds(reloadTime);
+            return;
+        }
+
+        float reloadDuration = Mathf.Max(0.01f, reloadTime);
+        reloadElapsed += Time.deltaTime;
+
+        if (motionType == WeaponMotionType.Gun && useReloadAnimation)
+        {
+            ApplyReloadAnimationPose(Mathf.Clamp01(reloadElapsed / reloadDuration));
+        }
+
+        if (reloadElapsed < reloadDuration)
+        {
+            return;
         }
 
         int ammoNeeded = magazineSize - currentAmmo;
         int ammoToReload = ConsumeReserveAmmo(ammoNeeded);
-
         currentAmmo += ammoToReload;
 
-        isReloading = false;
+        ResetReloadState();
         Debug.Log("Reloaded. Ammo: " + currentAmmo + "/" + GetReserveAmmoCount());
     }
 
@@ -414,67 +474,68 @@ public abstract class WeaponBase : MonoBehaviour
 
     protected void CancelReload()
     {
-        if (reloadCoroutine != null)
+        if (!isReloading && !reloadPausedWhileHolstered)
         {
-            StopCoroutine(reloadCoroutine);
-            reloadCoroutine = null;
+            return;
         }
 
-        isReloading = false;
-        reloadCancelledThisFrame = true;
+        ResetReloadState();
 
+        Debug.Log("Reload Cancelled");
+    }
+
+    void ResetReloadState()
+    {
+        isReloading = false;
+        reloadPausedWhileHolstered = false;
+        reloadElapsed = 0f;
+        reloadTriggerType = ReloadTriggerType.None;
+        ResetWeaponPoseAfterReloadStop();
+    }
+
+    void ResetWeaponPoseAfterReloadStop()
+    {
         if (motionType == WeaponMotionType.Gun)
         {
             transform.localPosition = originalLocalPosition;
             transform.localRotation = originalLocalRotation;
         }
-
-        Debug.Log("Reload Cancelled");
     }
 
-    IEnumerator PlayReloadAnimation()
+    void ApplyReloadAnimationPose(float normalizedProgress)
     {
+        float progress = Mathf.Clamp01(normalizedProgress);
         float lowerDuration = Mathf.Max(0.01f, reloadTime * reloadLowerFraction);
         float raiseDuration = Mathf.Max(0.01f, reloadTime * reloadRaiseFraction);
         float holdDuration = Mathf.Max(0f, reloadTime - lowerDuration - raiseDuration);
+        float lowerEndTime = lowerDuration;
+        float holdEndTime = lowerDuration + holdDuration;
+        float elapsedTime = progress * Mathf.Max(0.01f, reloadTime);
 
-        Vector3 startPosition = transform.localPosition;
-        Quaternion startRotation = transform.localRotation;
         Vector3 reloadPosition = originalLocalPosition + reloadPositionOffset;
         Quaternion reloadRotation =
             originalLocalRotation * Quaternion.Euler(reloadTiltEuler);
 
-        float t = 0f;
-        while (t < lowerDuration)
+        if (elapsedTime <= lowerEndTime)
         {
-            t += Time.deltaTime;
-            float progress = t / lowerDuration;
-            transform.localPosition = Vector3.Lerp(startPosition, reloadPosition, progress);
-            transform.localRotation = Quaternion.Slerp(startRotation, reloadRotation, progress);
-            yield return null;
+            float lowerT = Mathf.Clamp01(elapsedTime / lowerDuration);
+            transform.localPosition = Vector3.Lerp(originalLocalPosition, reloadPosition, lowerT);
+            transform.localRotation = Quaternion.Slerp(originalLocalRotation, reloadRotation, lowerT);
+            return;
         }
 
-        transform.localPosition = reloadPosition;
-        transform.localRotation = reloadRotation;
-
-        if (holdDuration > 0f)
+        if (elapsedTime <= holdEndTime)
         {
-            yield return new WaitForSeconds(holdDuration);
+            transform.localPosition = reloadPosition;
+            transform.localRotation = reloadRotation;
+            return;
         }
 
-        t = 0f;
-        while (t < raiseDuration)
-        {
-            t += Time.deltaTime;
-            float progress = t / raiseDuration;
-            float snapProgress = 1f - Mathf.Pow(1f - Mathf.Clamp01(progress), 3f);
-            transform.localPosition = Vector3.Lerp(reloadPosition, originalLocalPosition, snapProgress);
-            transform.localRotation = Quaternion.Slerp(reloadRotation, originalLocalRotation, snapProgress);
-            yield return null;
-        }
-
-        transform.localPosition = originalLocalPosition;
-        transform.localRotation = originalLocalRotation;
+        float raiseTime = elapsedTime - holdEndTime;
+        float raiseT = Mathf.Clamp01(raiseTime / raiseDuration);
+        float snapProgress = 1f - Mathf.Pow(1f - raiseT, 3f);
+        transform.localPosition = Vector3.Lerp(reloadPosition, originalLocalPosition, snapProgress);
+        transform.localRotation = Quaternion.Slerp(reloadRotation, originalLocalRotation, snapProgress);
     }
 
     protected void SpawnTracer(Vector3 startPoint, Vector3 endPoint)
