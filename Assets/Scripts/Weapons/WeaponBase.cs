@@ -72,11 +72,35 @@ public abstract class WeaponBase : MonoBehaviour
     public float muzzleFlashLightIntensity = 7f;
     public float muzzleFlashLightRange = 4f;
     public float muzzleFlashLightDuration = 0.09f;
+
+    [Header("Impact Decals")]
+    public bool useImpactDecals = true;
+    public int maxImpactDecals = 120;
+    public float impactDecalMinSize = 0.07f;
+    public float impactDecalMaxSize = 0.12f;
+    public float impactDecalSurfaceOffset = 0.012f;
+    public float impactDecalLifetime = 18f;
+    public Color worldImpactDecalColor = new Color(0.45f, 0.45f, 0.45f, 0.9f);
+    public Color enemyImpactDecalColor = new Color(0.75f, 0.08f, 0.08f, 0.95f);
+
     Vector3 originalLocalPosition;
     Quaternion originalRecoilPivotLocalRotation;
     float currentRecoilAngle;
     int tracerShotCounter;
     Material runtimeMuzzleFlashMaterial;
+    static Material sharedImpactDecalMaterial;
+    readonly List<PooledImpactDecal> impactDecalPool = new List<PooledImpactDecal>();
+    int nextImpactDecalIndex;
+    MaterialPropertyBlock impactDecalPropertyBlock;
+
+    class PooledImpactDecal
+    {
+        public GameObject gameObject;
+        public Transform transform;
+        public Renderer renderer;
+        public float despawnTime;
+        public bool inUse;
+    }
 
     [Header("Melee Swing")]
     public float swingAngle = 60f;
@@ -117,6 +141,11 @@ public abstract class WeaponBase : MonoBehaviour
 
     protected virtual void Awake()
     {
+        if (impactDecalPropertyBlock == null)
+        {
+            impactDecalPropertyBlock = new MaterialPropertyBlock();
+        }
+
         CacheOriginalPose();
     }
 
@@ -127,6 +156,16 @@ public abstract class WeaponBase : MonoBehaviour
             Destroy(runtimeMuzzleFlashMaterial);
             runtimeMuzzleFlashMaterial = null;
         }
+
+        for (int i = 0; i < impactDecalPool.Count; i++)
+        {
+            if (impactDecalPool[i].gameObject != null)
+            {
+                Destroy(impactDecalPool[i].gameObject);
+            }
+        }
+
+        impactDecalPool.Clear();
     }
 
     protected virtual void Start()
@@ -216,6 +255,7 @@ public abstract class WeaponBase : MonoBehaviour
             TryStartReload(ReloadTriggerType.AutoEmpty);
         }
 
+        UpdateImpactDecalPool();
         UpdateReloadState();
         HandleInput();
 
@@ -586,6 +626,216 @@ public abstract class WeaponBase : MonoBehaviour
         );
     }
 
+    protected void SpawnImpactDecal(RaycastHit hit)
+    {
+        SpawnImpactDecal(hit, IsEnemyHit(hit));
+    }
+
+    protected void SpawnImpactDecal(RaycastHit hit, bool isEnemyHit)
+    {
+        if (!useImpactDecals || hit.collider == null)
+        {
+            return;
+        }
+
+        int decalIndex = AcquireImpactDecalIndex();
+        if (decalIndex < 0 || decalIndex >= impactDecalPool.Count)
+        {
+            return;
+        }
+
+        PooledImpactDecal pooledDecal = impactDecalPool[decalIndex];
+        if (pooledDecal.gameObject == null)
+        {
+            return;
+        }
+
+        pooledDecal.inUse = true;
+        pooledDecal.gameObject.name = isEnemyHit ? "ImpactDecalEnemy" : "ImpactDecalWorld";
+        pooledDecal.transform.SetParent(hit.collider.transform, true);
+        pooledDecal.transform.position = hit.point + (hit.normal * impactDecalSurfaceOffset);
+        pooledDecal.transform.rotation = Quaternion.LookRotation(-hit.normal);
+        pooledDecal.transform.Rotate(Vector3.forward, Random.Range(0f, 360f), Space.Self);
+
+        float decalSize = Random.Range(impactDecalMinSize, impactDecalMaxSize);
+        pooledDecal.transform.localScale = new Vector3(decalSize, decalSize, decalSize);
+
+        if (pooledDecal.renderer != null)
+        {
+            if (impactDecalPropertyBlock == null)
+            {
+                impactDecalPropertyBlock = new MaterialPropertyBlock();
+            }
+
+            Color decalColor = isEnemyHit ? enemyImpactDecalColor : worldImpactDecalColor;
+            impactDecalPropertyBlock.Clear();
+            impactDecalPropertyBlock.SetColor("_BaseColor", decalColor);
+            impactDecalPropertyBlock.SetColor("_Color", decalColor);
+            pooledDecal.renderer.SetPropertyBlock(impactDecalPropertyBlock);
+        }
+
+        pooledDecal.gameObject.SetActive(true);
+        pooledDecal.despawnTime = Time.time + Mathf.Max(0.2f, impactDecalLifetime);
+        impactDecalPool[decalIndex] = pooledDecal;
+    }
+
+    void UpdateImpactDecalPool()
+    {
+        if (impactDecalPool.Count <= 0)
+        {
+            return;
+        }
+
+        for (int i = 0; i < impactDecalPool.Count; i++)
+        {
+            PooledImpactDecal pooledDecal = impactDecalPool[i];
+            if (!pooledDecal.inUse)
+            {
+                continue;
+            }
+
+            if (
+                pooledDecal.gameObject == null
+                || Time.time >= pooledDecal.despawnTime
+            )
+            {
+                ReleaseImpactDecal(i);
+            }
+        }
+    }
+
+    int AcquireImpactDecalIndex()
+    {
+        int poolSize = impactDecalPool.Count;
+
+        for (int i = 0; i < poolSize; i++)
+        {
+            int index = (nextImpactDecalIndex + i) % poolSize;
+            PooledImpactDecal pooledDecal = impactDecalPool[index];
+
+            if (pooledDecal.gameObject == null)
+            {
+                impactDecalPool[index] = CreatePooledImpactDecal();
+                nextImpactDecalIndex = (index + 1) % Mathf.Max(1, impactDecalPool.Count);
+                return index;
+            }
+
+            if (!pooledDecal.inUse)
+            {
+                nextImpactDecalIndex = (index + 1) % Mathf.Max(1, impactDecalPool.Count);
+                return index;
+            }
+        }
+
+        int maxPoolSize = Mathf.Max(1, maxImpactDecals);
+        if (impactDecalPool.Count < maxPoolSize)
+        {
+            impactDecalPool.Add(CreatePooledImpactDecal());
+            nextImpactDecalIndex = impactDecalPool.Count % Mathf.Max(1, impactDecalPool.Count);
+            return impactDecalPool.Count - 1;
+        }
+
+        int oldestIndex = 0;
+        float oldestDespawnTime = float.MaxValue;
+        for (int i = 0; i < impactDecalPool.Count; i++)
+        {
+            if (impactDecalPool[i].despawnTime < oldestDespawnTime)
+            {
+                oldestDespawnTime = impactDecalPool[i].despawnTime;
+                oldestIndex = i;
+            }
+        }
+
+        ReleaseImpactDecal(oldestIndex);
+        nextImpactDecalIndex = (oldestIndex + 1) % Mathf.Max(1, impactDecalPool.Count);
+        return oldestIndex;
+    }
+
+    PooledImpactDecal CreatePooledImpactDecal()
+    {
+        GameObject decalObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        decalObject.name = "ImpactDecal";
+
+        Collider decalCollider = decalObject.GetComponent<Collider>();
+        if (decalCollider != null)
+        {
+            Destroy(decalCollider);
+        }
+
+        Renderer decalRenderer = decalObject.GetComponent<Renderer>();
+        if (decalRenderer != null)
+        {
+            Material decalMaterial = GetOrCreateImpactDecalMaterial();
+            if (decalMaterial != null)
+            {
+                decalRenderer.sharedMaterial = decalMaterial;
+            }
+
+            decalRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            decalRenderer.receiveShadows = false;
+            decalRenderer.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
+            decalRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
+        }
+
+        decalObject.SetActive(false);
+
+        return new PooledImpactDecal
+        {
+            gameObject = decalObject,
+            transform = decalObject.transform,
+            renderer = decalRenderer,
+            despawnTime = 0f,
+            inUse = false,
+        };
+    }
+
+    void ReleaseImpactDecal(int index)
+    {
+        if (index < 0 || index >= impactDecalPool.Count)
+        {
+            return;
+        }
+
+        PooledImpactDecal pooledDecal = impactDecalPool[index];
+        if (pooledDecal.gameObject == null)
+        {
+            pooledDecal.inUse = false;
+            pooledDecal.despawnTime = 0f;
+            impactDecalPool[index] = pooledDecal;
+            return;
+        }
+
+        pooledDecal.transform.SetParent(null, true);
+        pooledDecal.gameObject.SetActive(false);
+        pooledDecal.inUse = false;
+        pooledDecal.despawnTime = 0f;
+        impactDecalPool[index] = pooledDecal;
+    }
+
+    bool IsEnemyHit(RaycastHit hit)
+    {
+        if (hit.collider == null)
+        {
+            return false;
+        }
+
+        if (hit.collider.CompareTag("Enemy"))
+        {
+            return true;
+        }
+
+        IDamageable damageable =
+            hit.collider.GetComponent<IDamageable>()
+            ?? hit.collider.GetComponentInParent<IDamageable>();
+
+        if (damageable == null)
+        {
+            return false;
+        }
+
+        return !(damageable is PlayerInventory);
+    }
+
     void SpawnMuzzleFlash()
     {
         if (!useMuzzleFlash)
@@ -744,6 +994,61 @@ public abstract class WeaponBase : MonoBehaviour
         }
 
         return runtimeMuzzleFlashMaterial;
+    }
+
+    Material GetOrCreateImpactDecalMaterial()
+    {
+        if (sharedImpactDecalMaterial != null)
+        {
+            return sharedImpactDecalMaterial;
+        }
+
+        string[] shaderCandidates =
+        {
+            "Universal Render Pipeline/Unlit",
+            "Unlit/Color",
+            "Sprites/Default",
+        };
+
+        Shader chosenShader = null;
+        for (int i = 0; i < shaderCandidates.Length; i++)
+        {
+            Shader candidate = Shader.Find(shaderCandidates[i]);
+            if (candidate != null)
+            {
+                chosenShader = candidate;
+                break;
+            }
+        }
+
+        if (chosenShader == null)
+        {
+            return null;
+        }
+
+        sharedImpactDecalMaterial = new Material(chosenShader);
+        sharedImpactDecalMaterial.name = "RuntimeImpactDecalMaterial";
+        sharedImpactDecalMaterial.enableInstancing = true;
+        sharedImpactDecalMaterial.hideFlags = HideFlags.HideAndDontSave;
+
+        if (sharedImpactDecalMaterial.HasProperty("_Surface"))
+        {
+            sharedImpactDecalMaterial.SetFloat("_Surface", 1f);
+        }
+        if (sharedImpactDecalMaterial.HasProperty("_Cull"))
+        {
+            sharedImpactDecalMaterial.SetFloat("_Cull", 0f);
+        }
+        if (sharedImpactDecalMaterial.HasProperty("_BaseColor"))
+        {
+            sharedImpactDecalMaterial.SetColor("_BaseColor", worldImpactDecalColor);
+        }
+        if (sharedImpactDecalMaterial.HasProperty("_Color"))
+        {
+            sharedImpactDecalMaterial.SetColor("_Color", worldImpactDecalColor);
+        }
+
+        return sharedImpactDecalMaterial;
     }
 
     IEnumerator PlayTracer(Vector3 startPoint, Vector3 endPoint)

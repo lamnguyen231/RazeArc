@@ -59,6 +59,7 @@ public class Pistol : WeaponBase
         if (Physics.Raycast(ray, out hit, range, shootMask))
         {
             SpawnTracer(tracerStart, hit.point);
+            SpawnImpactDecal(hit);
 
             if (hit.collider.TryGetComponent<IDamageable>(out var damageable))
             {

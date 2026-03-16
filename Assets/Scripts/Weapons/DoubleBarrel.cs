@@ -73,6 +73,8 @@ public class DoubleBarrel : WeaponBase
 
             if (Physics.Raycast(ray, out hit, range, shootMask))
             {
+                SpawnImpactDecal(hit);
+
                 if (!hitSomething)
                 {
                     tracerEndPoint = hit.point;
