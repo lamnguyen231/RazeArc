@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 501755818272486581}
   - component: {fileID: 1410996214024852388}
   - component: {fileID: 457671600325397959}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Roof
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -361,7 +361,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1328027718212110480}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Template_Room_4Way
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -405,7 +405,7 @@ GameObject:
   - component: {fileID: 4115543240954302392}
   - component: {fileID: 1680885919342811617}
   - component: {fileID: 5902778857235995922}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2099,7 +2099,7 @@ GameObject:
   - component: {fileID: 929806990223525661}
   - component: {fileID: 1953490268659191567}
   - component: {fileID: 3024265428271999343}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

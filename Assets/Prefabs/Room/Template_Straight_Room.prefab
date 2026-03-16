@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 313139248689452232}
   - component: {fileID: 6982254486949722594}
   - component: {fileID: 5380377973239064942}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -366,7 +366,7 @@ GameObject:
   - component: {fileID: 1416059496608891771}
   - component: {fileID: 5592284500345651665}
   - component: {fileID: 2943578579933698052}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall 2 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -718,7 +718,7 @@ GameObject:
   - component: {fileID: 9030349838971345222}
   - component: {fileID: 5215665684522313592}
   - component: {fileID: 3586053609005409846}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1065,7 +1065,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8561676682869471584}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Template_Straight_Room
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1105,7 +1105,7 @@ GameObject:
   - component: {fileID: 8264672039755920848}
   - component: {fileID: 938726791499023369}
   - component: {fileID: 5611132341176029651}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Floor (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

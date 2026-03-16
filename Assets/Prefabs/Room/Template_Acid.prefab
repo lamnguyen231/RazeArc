@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3800384026295773755}
   - component: {fileID: 1666409223714371968}
   - component: {fileID: 8998355480741463415}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: UpperRoom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -367,7 +367,7 @@ GameObject:
   - component: {fileID: 5159588557291775086}
   - component: {fileID: 6419947680617150486}
   - component: {fileID: 2314231390505461193}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Playground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -719,7 +719,7 @@ GameObject:
   - component: {fileID: 8223635833534945408}
   - component: {fileID: 1713853618600675031}
   - component: {fileID: 6245387264513463021}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1017,7 +1017,7 @@ GameObject:
   - component: {fileID: 8571123433525174253}
   - component: {fileID: 9217613211535578042}
   - component: {fileID: 2120618475534578483}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Stairs (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5543,7 +5543,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6636006949951400939}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Template_Acid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5589,7 +5589,7 @@ GameObject:
   - component: {fileID: 3221234203919898394}
   - component: {fileID: 6419510142771518463}
   - component: {fileID: 8586689263837992604}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Stairs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10120,7 +10120,7 @@ GameObject:
   - component: {fileID: 1763114817351162279}
   - component: {fileID: 6177994495699771029}
   - component: {fileID: 5363074601874060196}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SecondFloor
   m_TagString: Untagged
   m_Icon: {fileID: 0}

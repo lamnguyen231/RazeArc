@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 9215828967614516574}
   - component: {fileID: 3930533629913787825}
   - component: {fileID: 2455387015267463578}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SmallPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1684,7 +1684,7 @@ GameObject:
   - component: {fileID: 7818065621401100394}
   - component: {fileID: 7283288969788343616}
   - component: {fileID: 6260743813730326229}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SehlterWall 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2106,7 +2106,7 @@ GameObject:
   - component: {fileID: 2067686448465699971}
   - component: {fileID: 7686251870256683003}
   - component: {fileID: 3447605203015514158}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Stairs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6637,7 +6637,7 @@ GameObject:
   - component: {fileID: 3467067405697755955}
   - component: {fileID: 7877300041121184952}
   - component: {fileID: 1121193270120304423}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6990,7 +6990,7 @@ GameObject:
   - component: {fileID: 3264006433362467207}
   - component: {fileID: 9165735358336801387}
   - component: {fileID: 5170862298770016835}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7488,7 +7488,7 @@ GameObject:
   - component: {fileID: 4882636543216696840}
   - component: {fileID: 2291149081238422556}
   - component: {fileID: 2150745126540227329}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: UpperRoom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7841,7 +7841,7 @@ GameObject:
   - component: {fileID: 2617387660919130818}
   - component: {fileID: 7099105320276745475}
   - component: {fileID: 2625546424522660762}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8194,7 +8194,7 @@ GameObject:
   - component: {fileID: 9200440012475638523}
   - component: {fileID: 1120767067187728664}
   - component: {fileID: 2896033400222931343}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: UpperRoomRoof
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8547,7 +8547,7 @@ GameObject:
   - component: {fileID: 237872378885458201}
   - component: {fileID: 7791379402573955922}
   - component: {fileID: 3111130414881398877}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Stairs (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13082,7 +13082,7 @@ GameObject:
   - component: {fileID: 2987844627589839035}
   - component: {fileID: 1632283189421995164}
   - component: {fileID: 6785780680668153}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SmallPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14752,7 +14752,7 @@ GameObject:
   - component: {fileID: 5862463796398759222}
   - component: {fileID: 5595349385909042223}
   - component: {fileID: 1511954679497739049}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Floor 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15104,7 +15104,7 @@ GameObject:
   - component: {fileID: 1572312556272103186}
   - component: {fileID: 3836370489249019265}
   - component: {fileID: 6124574194062293749}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Floor 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15526,7 +15526,7 @@ GameObject:
   - component: {fileID: 1555511429436652034}
   - component: {fileID: 7787493720636626496}
   - component: {fileID: 5393966491579507969}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ShelterWall 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16100,7 +16100,7 @@ GameObject:
   - component: {fileID: 192155840495166855}
   - component: {fileID: 635074709990215689}
   - component: {fileID: 3014522252941960100}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16598,7 +16598,7 @@ GameObject:
   - component: {fileID: 1923868708334848212}
   - component: {fileID: 8486686465939499583}
   - component: {fileID: 6299599956781515161}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ZigZagWalk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17324,7 +17324,7 @@ GameObject:
   - component: {fileID: 2842303515537366722}
   - component: {fileID: 1715609009508342301}
   - component: {fileID: 6445259941541017830}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18045,7 +18045,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4203615402252428097}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Template_Acid_Height
   m_TagString: Untagged
   m_Icon: {fileID: 0}

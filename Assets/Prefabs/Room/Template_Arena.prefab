@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6996079284064284240}
   - component: {fileID: 2564654934430566940}
   - component: {fileID: 8928685407071182161}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7787,7 +7787,7 @@ GameObject:
   - component: {fileID: 2359708704910823458}
   - component: {fileID: 697021049318904365}
   - component: {fileID: 6309005213098792515}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Roof
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9547,7 +9547,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2438960340009252843}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Template_Arena
   m_TagString: Untagged
   m_Icon: {fileID: 0}

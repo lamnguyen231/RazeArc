@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 532271982129203509}
   - component: {fileID: 3353153151705669942}
   - component: {fileID: 796545891453434865}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Roof
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -370,7 +370,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1379639639992827754}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Balcony 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -410,7 +410,7 @@ GameObject:
   - component: {fileID: 4062976714668116899}
   - component: {fileID: 4969375797054745156}
   - component: {fileID: 5633780049992222830}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1286,7 +1286,7 @@ GameObject:
   - component: {fileID: 7149524395369348490}
   - component: {fileID: 8509736430318779480}
   - component: {fileID: 5185677522510989730}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PolyShape
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1708,7 +1708,7 @@ GameObject:
   - component: {fileID: 4456065393754357689}
   - component: {fileID: 5974166121869023373}
   - component: {fileID: 8539327104574619612}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PolyShape
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2130,7 +2130,7 @@ GameObject:
   - component: {fileID: 5498768959911057036}
   - component: {fileID: 4848646030654969742}
   - component: {fileID: 1898928625708218743}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3335,7 +3335,7 @@ GameObject:
   - component: {fileID: 3214530238792864828}
   - component: {fileID: 6659343779169805678}
   - component: {fileID: 2647214479646296788}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4517,7 +4517,7 @@ GameObject:
   - component: {fileID: 7529605362659080551}
   - component: {fileID: 990672252070633140}
   - component: {fileID: 369948673759716121}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4865,7 +4865,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5882506159480678563}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Template_U_Acid_room
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4911,7 +4911,7 @@ GameObject:
   - component: {fileID: 1510473472006317136}
   - component: {fileID: 428629708042480341}
   - component: {fileID: 8566213719289430933}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Pipe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8321,7 +8321,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2774163419511827333}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Balcony 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8361,7 +8361,7 @@ GameObject:
   - component: {fileID: 2789679217072786780}
   - component: {fileID: 1804047870290656926}
   - component: {fileID: 4876826582747070964}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

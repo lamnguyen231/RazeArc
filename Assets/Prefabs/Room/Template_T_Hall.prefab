@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3549313154231326853}
   - component: {fileID: 7595759176107867395}
   - component: {fileID: 8064268893152383497}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -366,7 +366,7 @@ GameObject:
   - component: {fileID: 8682449675355114022}
   - component: {fileID: 3167630713529933610}
   - component: {fileID: 7632021591183452754}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -859,7 +859,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3304377211746438878}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Template_T_Hall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -900,7 +900,7 @@ GameObject:
   - component: {fileID: 4167628212690590524}
   - component: {fileID: 5950948479235863091}
   - component: {fileID: 5711612295331861424}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1322,7 +1322,7 @@ GameObject:
   - component: {fileID: 7503003867613354617}
   - component: {fileID: 902249509724609898}
   - component: {fileID: 9015594626889577539}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Floor (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1916,7 +1916,7 @@ GameObject:
   - component: {fileID: 4817537899541770116}
   - component: {fileID: 6999060006287346863}
   - component: {fileID: 2597491558843971781}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

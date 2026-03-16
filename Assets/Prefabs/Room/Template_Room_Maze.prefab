@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5135764674221965616}
   - component: {fileID: 5671611363413036001}
   - component: {fileID: 2618288328933280615}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Maze Wall 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -367,7 +367,7 @@ GameObject:
   - component: {fileID: 501755818272486581}
   - component: {fileID: 1410996214024852388}
   - component: {fileID: 457671600325397959}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Roof
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -762,7 +762,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1328027718212110480}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Template_Room_Maze
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -805,7 +805,7 @@ GameObject:
   - component: {fileID: 4441940543504275639}
   - component: {fileID: 668420775751687601}
   - component: {fileID: 7574585487296530218}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Maze Wall 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1158,7 +1158,7 @@ GameObject:
   - component: {fileID: 4115543240954302392}
   - component: {fileID: 1680885919342811617}
   - component: {fileID: 5902778857235995922}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2492,7 +2492,7 @@ GameObject:
   - component: {fileID: 5251994820191218486}
   - component: {fileID: 7797770461165749258}
   - component: {fileID: 6288917492452524326}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Maze Wall 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2845,7 +2845,7 @@ GameObject:
   - component: {fileID: 929806990223525661}
   - component: {fileID: 1953490268659191567}
   - component: {fileID: 3024265428271999343}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
