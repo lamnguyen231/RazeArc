@@ -34,7 +34,7 @@ public class SMG : WeaponBase
         recoilMin = new Vector3(-0.15f, -10f, 0f);
         recoilMax = new Vector3(0.15f, -15f, 0f);
 
-        kickbackAmount = 0.08f;
+        kickbackAmount = 0.18f;
         kickReturnDuration = 0.09f;
         kickReturnExponent = 2f;
         recoilKickAngle = 0.7f;
