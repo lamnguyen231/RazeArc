@@ -14,9 +14,9 @@ public class RocketProjectile : MonoBehaviour
     public float maxSelfDamage = 85f;
 
     [Header("Rocket Jump")]
-    public float playerExplosionForceMultiplier = 2.6f;
-    public float rocketJumpCenterBonus = 1.95f;
-    public float minPlayerForceFalloff = 0.45f;
+    public float playerExplosionForceMultiplier = 3.2f;
+    public float rocketJumpCenterBonus = 2.1f;
+    public float minPlayerForceFalloff = 0.6f;
 
     [Header("Explosion VFX")]
     public GameObject explosionEffectPrefab;

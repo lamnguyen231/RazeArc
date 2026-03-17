@@ -18,7 +18,13 @@ public class PlayerMovement : MonoBehaviour
     public float airAcceleration = 12f;
     public float explosionHorizontalDamping = 4.5f;
     public float explosionUpwardDamping = 1.25f;
-    public float rocketJumpVerticalBoostMultiplier = 1.45f;
+    public float rocketJumpVerticalBoostMultiplier = 3.8f;
+    public float maxExplosionUpwardVelocity = 32f;
+    public float maxExplosionHorizontalVelocity = 12f;
+    public float explosionForceScale = 1.35f;
+    public float movementInputDeadzone = 0.05f;
+    public float residualVelocityDeadzone = 0.03f;
+    public float groundedHorizontalDamping = 20f;
     Vector3 velocity;
     Vector3 explosionVelocity;
 
@@ -57,11 +63,30 @@ public class PlayerMovement : MonoBehaviour
             if (velocity.y < 0)
                 velocity.y = -2f;
 
+            velocity.x = Mathf.MoveTowards(
+                velocity.x,
+                0f,
+                Mathf.Max(0f, groundedHorizontalDamping) * Time.deltaTime
+            );
+            velocity.z = Mathf.MoveTowards(
+                velocity.z,
+                0f,
+                Mathf.Max(0f, groundedHorizontalDamping) * Time.deltaTime
+            );
+
             jumpCount = 0;
         }
 
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
+        if (Mathf.Abs(x) < movementInputDeadzone)
+        {
+            x = 0f;
+        }
+        if (Mathf.Abs(z) < movementInputDeadzone)
+        {
+            z = 0f;
+        }
         Vector3 moveDirection = transform.right * x + transform.forward * z;
 
         // Apply air acceleration when airborne
@@ -117,7 +142,7 @@ public class PlayerMovement : MonoBehaviour
             explosionVelocity +
             velocity;
 
-        bodyController.Move(finalMove * Time.deltaTime);
+        CollisionFlags collisionFlags = bodyController.Move(finalMove * Time.deltaTime);
 
         // Decay explosion pushback
         Vector3 horizontalExplosionVelocity = new Vector3(
@@ -125,11 +150,39 @@ public class PlayerMovement : MonoBehaviour
             0f,
             explosionVelocity.z
         );
-        horizontalExplosionVelocity = Vector3.Lerp(
+
+        bool hasMoveInput = moveDirection.sqrMagnitude > 0.0001f;
+        if (isGrounded && !hasMoveInput)
+        {
+            if (Mathf.Abs(velocity.x) < residualVelocityDeadzone)
+            {
+                velocity.x = 0f;
+            }
+            if (Mathf.Abs(velocity.z) < residualVelocityDeadzone)
+            {
+                velocity.z = 0f;
+            }
+        }
+
+        if ((collisionFlags & CollisionFlags.Sides) != 0 && !hasMoveInput)
+        {
+            // If blast pushes into a wall while idle, clear horizontal impulse quickly.
+            horizontalExplosionVelocity = Vector3.MoveTowards(
+                horizontalExplosionVelocity,
+                Vector3.zero,
+                Mathf.Max(0f, explosionHorizontalDamping) * 8f * Time.deltaTime
+            );
+        }
+
+        horizontalExplosionVelocity = Vector3.MoveTowards(
             horizontalExplosionVelocity,
             Vector3.zero,
             Mathf.Max(0f, explosionHorizontalDamping) * Time.deltaTime
         );
+        if (horizontalExplosionVelocity.sqrMagnitude < residualVelocityDeadzone * residualVelocityDeadzone)
+        {
+            horizontalExplosionVelocity = Vector3.zero;
+        }
 
         float verticalExplosionVelocity = explosionVelocity.y;
         float verticalDamping = verticalExplosionVelocity > 0f
@@ -140,6 +193,17 @@ public class PlayerMovement : MonoBehaviour
             0f,
             verticalDamping * Time.deltaTime
         );
+
+        if (isGrounded || (collisionFlags & CollisionFlags.Below) != 0)
+        {
+            // Prevent repeated tiny hops after rocket jumps once feet touch down.
+            verticalExplosionVelocity = Mathf.Min(0f, verticalExplosionVelocity);
+        }
+
+        if (Mathf.Abs(verticalExplosionVelocity) < residualVelocityDeadzone)
+        {
+            verticalExplosionVelocity = 0f;
+        }
 
         explosionVelocity = new Vector3(
             horizontalExplosionVelocity.x,
@@ -160,22 +224,36 @@ public class PlayerMovement : MonoBehaviour
             return;
 
         float falloff = 1f - (distance / radius);
+        float scaledForce = Mathf.Max(0f, force) * Mathf.Max(0f, explosionForceScale);
 
-        // Point-blank rocket jumps can produce near-zero horizontal direction.
-        if (direction.sqrMagnitude < 0.0001f)
+        Vector3 horizontalDirection = new Vector3(direction.x, 0f, direction.z);
+        float horizontalScale = 1f;
+        if (horizontalDirection.sqrMagnitude < 0.0001f)
         {
-            direction = transform.up;
+            // Point-blank blast: prefer vertical lift over arbitrary sideways shove.
+            horizontalDirection = Vector3.zero;
+            horizontalScale = 0f;
         }
 
-        Vector3 push = direction.normalized * force * falloff;
+        Vector3 push = horizontalDirection.normalized * scaledForce * 1.15f * falloff * horizontalScale;
 
-        // Strong vertical boost
-        push.y = Mathf.Max(
-            push.y,
-            force * Mathf.Max(0f, rocketJumpVerticalBoostMultiplier) * falloff
-        );
+        float verticalBoost =
+            scaledForce
+            * Mathf.Max(0f, rocketJumpVerticalBoostMultiplier)
+            * 0.42f
+            * falloff;
+        push.y = verticalBoost;
 
         explosionVelocity += push;
+
+        Vector3 horizontalExplosionVelocity = new Vector3(explosionVelocity.x, 0f, explosionVelocity.z);
+        horizontalExplosionVelocity = Vector3.ClampMagnitude(
+            horizontalExplosionVelocity,
+            Mathf.Max(0f, maxExplosionHorizontalVelocity)
+        );
+        explosionVelocity.x = horizontalExplosionVelocity.x;
+        explosionVelocity.z = horizontalExplosionVelocity.z;
+        explosionVelocity.y = Mathf.Min(explosionVelocity.y, Mathf.Max(0f, maxExplosionUpwardVelocity));
     }
 
     public bool IsCrouching()
