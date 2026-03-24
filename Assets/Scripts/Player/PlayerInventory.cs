@@ -33,9 +33,14 @@ public class PlayerInventory : MonoBehaviour, IDamageable
     public int defaultShellAmmo = 10;
     public int defaultRocketAmmo = 2;
 
+    private bool isDead;
+    private GameFlowManager gameFlow;
+
     // Start is called before the first frame update
     void Start()
     {
+        isDead = false;
+        gameFlow = FindFirstObjectByType<GameFlowManager>();
         InitializeDefaultAmmoPools();
         UpdateHealthUI();
     }
@@ -54,16 +59,27 @@ public class PlayerInventory : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damageAmount)
     {
+        if (isDead) return;
+        if (gameFlow != null && gameFlow.IsEndScreenOpen) return;
+
         playerHealth -= damageAmount;
-        Debug.Log($"You have taken ${damageAmount} amount of damage.");
+        playerHealth = Mathf.Max(0, playerHealth);
+        Debug.Log($"You have taken {damageAmount} amount of damage.");
 
         UpdateHealthUI();
 
-        if (playerHealth <= 0)
+        if (playerHealth <= 0f)
         {
-            Debug.Log("You are ded.");
-            //SceneManager.LoadScene("GameOverRetry");
+            isDead = true;
+            DedGG();
         }
+    }
+
+    private void DedGG()
+    {
+        Debug.Log("You are ded.");
+        if (gameFlow != null) gameFlow.ShowLose();
+        else Debug.Log("Cant find GFM");
     }
 
     public void PickUpHealthPack()
@@ -71,7 +87,7 @@ public class PlayerInventory : MonoBehaviour, IDamageable
         playerHealth += 10f;
         Debug.Log($"You have healed 10 health");
 
-        if (playerHealth >= 100) 
+        if (playerHealth >= playerMaxHealth) 
         {
             playerHealth = playerMaxHealth;
             Debug.Log("You are full haehtl");

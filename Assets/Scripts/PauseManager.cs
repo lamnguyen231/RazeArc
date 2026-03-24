@@ -6,8 +6,14 @@ public class GameManager : MonoBehaviour
     public GameObject pauseMenuUI;
     private bool isPaused = false;
 
+    [SerializeField] private GameFlowManager gameFlow;
+
     void Start()
     {
+        if (gameFlow == null)
+        {
+            gameFlow = FindFirstObjectByType<GameFlowManager>();
+        }
         // Đảm bảo game chạy bình thường lúc mới vào
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1f;
@@ -15,6 +21,14 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        //Disabled Pause if at End Screen
+        if (gameFlow != null && gameFlow.IsEndScreenOpen)
+        {
+            isPaused = false;
+            pauseMenuUI.SetActive(false);
+            return;
+        }
+
         // Bấm phím P để bật/tắt Pause
         if (Input.GetKeyDown(KeyCode.P))
         {

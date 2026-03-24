@@ -20,6 +20,8 @@ public class SwitchController : MonoBehaviour
     [Header("NextLevel")]
     public string nextLevelName;
 
+    private GameFlowManager gameFlow;
+
     [Header("If Open Door")]
     public GameObject doorToOpen;
 
@@ -31,6 +33,11 @@ public class SwitchController : MonoBehaviour
 
     private bool isPlayerInRange = false;
     private bool hasBeenPressed = false;
+
+    private void Start()
+    {
+        gameFlow = FindFirstObjectByType<GameFlowManager>();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -61,6 +68,8 @@ public class SwitchController : MonoBehaviour
     {
         hasBeenPressed = true;
 
+        if (gameFlow != null && gameFlow.IsEndScreenOpen) return;
+
         if (buttonModel != null && pressedMaterial != null)
         {
             MeshRenderer renderer = buttonModel.GetComponentInChildren<MeshRenderer>();
@@ -72,8 +81,9 @@ public class SwitchController : MonoBehaviour
 
         if (switchAction == SwitchFunction.EndLevel)
         {
-            Debug.Log("Level finished. Loading next level.");
-            SceneManager.LoadScene(nextLevelName); 
+            Debug.Log("Level finished. Next Level Name: " + nextLevelName);
+            gameFlow.ShowWin(nextLevelName);
+
         }
         else if (switchAction == SwitchFunction.OpenDoor)
         {
