@@ -22,9 +22,6 @@ AnimatorStateMachine:
     m_State: {fileID: -3574294085891236909}
     m_Position: {x: 1018.68866, y: 119.15286, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 336119470709268777}
-    m_Position: {x: 739.4958, y: 251.03294, z: 0}
-  - serializedVersion: 1
     m_State: {fileID: 8253163186045162465}
     m_Position: {x: 1185.6433, y: 375.89807, z: 0}
   m_ChildStateMachines: []
@@ -48,8 +45,7 @@ AnimatorState:
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
-  m_StateMachineBehaviours:
-  - {fileID: 59307521818273860}
+  m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -149,32 +145,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 4941198730078568159, guid: 54d5c96a2f5c4904cb8f828c6a40e52f, type: 3}
---- !u!1102 &336119470709268777
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Chase 0
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 352f09a29acc00643802b2178a2500cd, type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
 --- !u!1102 &3984186773693610353
 AnimatorState:
   serializedVersion: 6
