@@ -11,6 +11,7 @@ public abstract class WeaponBase : MonoBehaviour
         AutoEmpty,
     }
 
+    
     [Header("Weapon Behavior")]
     public bool usesAmmo = true;
 
@@ -187,6 +188,7 @@ public abstract class WeaponBase : MonoBehaviour
     [Header("References")]
     public Transform firePoint;
     public CameraRecoil cameraRecoil;
+    public InGameUIManager uiManager;
 
     [Header("Gun Muzzle Compensation")]
        AudioSource audioSource;
@@ -251,6 +253,7 @@ public abstract class WeaponBase : MonoBehaviour
 
     protected virtual void Start()
     {
+        uiManager = FindObjectOfType<InGameUIManager>();
         playerInventory = GetComponentInParent<PlayerInventory>();
         if (playerInventory == null)
         {
@@ -268,7 +271,12 @@ public abstract class WeaponBase : MonoBehaviour
         {
             currentAmmo = magazineSize;
             InitializeAmmoPool();
-        }
+
+            // <-- THÊM ĐOẠN NÀY ĐỂ HIỂN THỊ ĐẠN LÚC MỚI VÀO GAME
+            if (uiManager != null)
+            {
+                uiManager.UpdateAmmo(currentAmmo, magazineSize);
+            }
 
         if (recoilPivot == null)
         {
@@ -284,7 +292,7 @@ public abstract class WeaponBase : MonoBehaviour
         audioSource.playOnAwake = false;
 
         CacheOriginalPose();
-    }
+    }}
 
     protected virtual void OnEnable()
     {
@@ -478,6 +486,12 @@ public abstract class WeaponBase : MonoBehaviour
             if (usesAmmo)
             {
                 currentAmmo--;
+
+                // <-- THÊM ĐOẠN NÀY ĐỂ BÁO TỤT ĐẠN KHI BẮN
+                if (uiManager != null)
+                {
+                    uiManager.UpdateAmmo(currentAmmo, magazineSize);
+                }
             }
 
             // Weapon attack animation
@@ -610,6 +624,12 @@ public abstract class WeaponBase : MonoBehaviour
         int ammoNeeded = magazineSize - currentAmmo;
         int ammoToReload = ConsumeReserveAmmo(ammoNeeded);
         currentAmmo += ammoToReload;
+
+        // <-- THÊM ĐOẠN NÀY ĐỂ BÁO ĐẦY ĐẠN SAU KHI RELOAD
+        if (uiManager != null)
+        {
+            uiManager.UpdateAmmo(currentAmmo, magazineSize);
+        }
 
         ResetReloadState();
         Debug.Log("Reloaded. Ammo: " + currentAmmo + "/" + GetReserveAmmoCount());
