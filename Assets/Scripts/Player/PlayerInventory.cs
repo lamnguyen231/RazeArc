@@ -75,17 +75,17 @@ public class PlayerInventory : MonoBehaviour, IDamageable
     {
         if (redKeycardImage != null)
         {
-            redKeycardImage.enabled = hasRedKey;
+            redKeycardImage.gameObject.SetActive(hasRedKey);
         }
 
         if (blueKeycardImage != null)
         {
-            blueKeycardImage.enabled = hasBlueKey;
+            blueKeycardImage.gameObject.SetActive(hasBlueKey);
         }
 
         if (greenKeycardImage != null)
         {
-            greenKeycardImage.enabled = hasGreenKey;
+            greenKeycardImage.gameObject.SetActive(hasGreenKey);
         }
     }
 
