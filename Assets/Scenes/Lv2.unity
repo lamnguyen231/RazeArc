@@ -470,6 +470,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2078994151}
     m_Modifications:
+    - target: {fileID: 640980973507217062, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 4614444301004132047, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.133362
@@ -1251,6 +1255,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2078994151}
     m_Modifications:
+    - target: {fileID: 3491419260333487157, guid: 563c9ebd2c29c9e44b77e101efeb90e9, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 4951766857303316998, guid: 563c9ebd2c29c9e44b77e101efeb90e9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.2813873
@@ -1313,6 +1321,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2002287329}
     m_Modifications:
+    - target: {fileID: 640980973507217062, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 4614444301004132047, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12.757002
@@ -1545,6 +1557,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2002287329}
     m_Modifications:
+    - target: {fileID: 3491419260333487157, guid: 563c9ebd2c29c9e44b77e101efeb90e9, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 4951766857303316998, guid: 563c9ebd2c29c9e44b77e101efeb90e9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10.214636
@@ -18119,6 +18135,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2002287329}
     m_Modifications:
+    - target: {fileID: 4746825732239888729, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 8583279017462203334, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
       propertyPath: m_Name
       value: JuniorEnemy
@@ -18351,6 +18371,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2078994151}
     m_Modifications:
+    - target: {fileID: 4746825732239888729, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 8583279017462203334, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
       propertyPath: m_Name
       value: JuniorEnemy (3)
@@ -20076,6 +20100,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2078994151}
     m_Modifications:
+    - target: {fileID: 4746825732239888729, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 8583279017462203334, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
       propertyPath: m_Name
       value: JuniorEnemy
@@ -21619,6 +21647,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5593476161992415268, guid: 8b36ccf94667fae43979ad5e121602ad, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -21637,6 +21669,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 875623668}
     m_Modifications:
+    - target: {fileID: 640980973507217062, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 4614444301004132047, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
       propertyPath: m_LocalPosition.x
       value: -16.44
@@ -21704,6 +21740,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2002287329}
     m_Modifications:
+    - target: {fileID: 4746825732239888729, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 8583279017462203334, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
       propertyPath: m_Name
       value: JuniorEnemy (3)
@@ -21771,6 +21811,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2002287329}
     m_Modifications:
+    - target: {fileID: 640980973507217062, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 4614444301004132047, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
       propertyPath: m_LocalPosition.x
       value: 12.436991
@@ -21972,6 +22016,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2078994151}
     m_Modifications:
+    - target: {fileID: 3491419260333487157, guid: 563c9ebd2c29c9e44b77e101efeb90e9, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 4951766857303316998, guid: 563c9ebd2c29c9e44b77e101efeb90e9, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.7095642
@@ -22967,6 +23015,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2078994151}
     m_Modifications:
+    - target: {fileID: 4746825732239888729, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 8583279017462203334, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
       propertyPath: m_Name
       value: JuniorEnemy (2)
@@ -25634,6 +25686,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2002287329}
     m_Modifications:
+    - target: {fileID: 640980973507217062, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 4614444301004132047, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
       propertyPath: m_LocalPosition.x
       value: 12.642448
@@ -25942,6 +25998,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5593476161992415268, guid: 8b36ccf94667fae43979ad5e121602ad, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -25956,6 +26016,11 @@ Transform:
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1296888137612702190, guid: 8b36ccf94667fae43979ad5e121602ad, type: 3}
   m_PrefabInstance: {fileID: 706665467}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &710853549 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3165073819584468699, guid: 9c8f15bd0dfba7e4390967449ead5e85, type: 3}
+  m_PrefabInstance: {fileID: 649786441}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &735718697
 PrefabInstance:
@@ -28283,6 +28348,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2078994151}
     m_Modifications:
+    - target: {fileID: 4746825732239888729, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 8583279017462203334, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
       propertyPath: m_Name
       value: JuniorEnemy (1)
@@ -28917,6 +28986,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2078994151}
     m_Modifications:
+    - target: {fileID: 640980973507217062, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 4614444301004132047, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.566452
@@ -29642,6 +29715,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5593476161992415268, guid: 8b36ccf94667fae43979ad5e121602ad, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -29665,6 +29742,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2002287329}
     m_Modifications:
+    - target: {fileID: 4746825732239888729, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 8583279017462203334, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
       propertyPath: m_Name
       value: JuniorEnemy (1)
@@ -32277,6 +32358,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 875623668}
     m_Modifications:
+    - target: {fileID: 640980973507217062, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 4614444301004132047, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
       propertyPath: m_LocalPosition.x
       value: -13.05
@@ -34867,6 +34952,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 875623668}
     m_Modifications:
+    - target: {fileID: 3491419260333487157, guid: 563c9ebd2c29c9e44b77e101efeb90e9, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 4951766857303316998, guid: 563c9ebd2c29c9e44b77e101efeb90e9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 13.170504
@@ -38579,6 +38668,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2002287329}
     m_Modifications:
+    - target: {fileID: 4746825732239888729, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 8583279017462203334, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
       propertyPath: m_Name
       value: JuniorEnemy (2)
@@ -38782,6 +38875,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 875623668}
     m_Modifications:
+    - target: {fileID: 4746825732239888729, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 8583279017462203334, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
       propertyPath: m_Name
       value: JuniorEnemy
@@ -40026,6 +40123,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2078994151}
     m_Modifications:
+    - target: {fileID: 640980973507217062, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 4614444301004132047, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.371536
@@ -41190,6 +41291,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 875623668}
     m_Modifications:
+    - target: {fileID: 3491419260333487157, guid: 563c9ebd2c29c9e44b77e101efeb90e9, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 4951766857303316998, guid: 563c9ebd2c29c9e44b77e101efeb90e9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.748261
@@ -41839,6 +41944,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2078994151}
     m_Modifications:
+    - target: {fileID: 4746825732239888729, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 8583279017462203334, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
       propertyPath: m_Name
       value: JuniorEnemy (4)
@@ -43186,6 +43295,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 875623668}
     m_Modifications:
+    - target: {fileID: 4746825732239888729, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 710853549}
     - target: {fileID: 8583279017462203334, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
       propertyPath: m_Name
       value: JuniorEnemy (1)
