@@ -1074,6 +1074,8 @@ MonoBehaviour:
   screamDuration: 2
   attackRange: 0
   chaseSpeedMultiplier: 1.5
+  damageAmount: 10
+  damageCooldown: 1
   vision: {fileID: 2225740400434464241}
   player: {fileID: 0}
   muzzleFlash: {fileID: 0}
@@ -1082,57 +1084,7 @@ MonoBehaviour:
   shootMask:
     serializedVersion: 2
     m_Bits: 320
-  waypoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  waypoints: []
 --- !u!114 &2225740400434464241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1188,7 +1140,7 @@ MonoBehaviour:
   explosionLightIntensity: 6
   explosionLightFadeDelay: 0.08
   explosionLightFadeDuration: 0.85
-  explosionClip: {fileID: 0}
+  explosionClip: {fileID: 8300000, guid: fa3b37786cd61e143a6322798f17b288, type: 3}
   explosionVolume: 1
   explosionSpatialBlend: 1
   explosionMinDistance: 3

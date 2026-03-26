@@ -23,6 +23,7 @@ public class EnemyAI : MonoBehaviour, IDamageable
     public float chaseSpeedMultiplier = 1.5f;
     public float damageAmount = 10f;
     public float damageCooldown = 2f;
+    public AudioClip screamSound;
 
     [Header("References")]
     public EnemyVision vision;
@@ -33,6 +34,7 @@ public class EnemyAI : MonoBehaviour, IDamageable
     public Transform gunMuzzle;
     public float fireRate = 1f;
     public LayerMask shootMask;
+    public AudioClip shootSound;    
 
     // ??? Waypoints ???????????????????????????????????????????
     [Header("Waypoints")]
@@ -42,6 +44,7 @@ public class EnemyAI : MonoBehaviour, IDamageable
     private NavMeshAgent agent;
     private Animator anim;
     private PlayerMovement playerMovement;
+    private AudioSource audioSource;
 
     private float idleTimer;
     private float screamTimer;
@@ -56,6 +59,7 @@ public class EnemyAI : MonoBehaviour, IDamageable
     {
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
         baseSpeed = agent.speed;
 
         // Tìm PlayerMovement ?? aim chính xác h?n
@@ -133,7 +137,7 @@ public class EnemyAI : MonoBehaviour, IDamageable
     {
         agent.isStopped = true;
         LookAtPlayer();
-
+        audioSource.PlayOneShot(screamSound);
         screamTimer += Time.deltaTime;
         if (screamTimer >= screamDuration)
         {
@@ -189,11 +193,15 @@ public class EnemyAI : MonoBehaviour, IDamageable
         }
         else
         {
-            if (Time.time >= nextFireTime)
+            AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
+            float normalizedTime = stateInfo.normalizedTime % 1f; // % 1f ?? loop
+
+            if (normalizedTime >= 0.5f && Time.time >= nextFireTime)
             {
                 Debug.Log("Enemy attacks the player with melee!");
+                audioSource.PlayOneShot(shootSound);
                 player.GetComponent<IDamageable>()?.TakeDamage(damageAmount);
-                nextFireTime = Time.time + damageCooldown;
+                nextFireTime = Time.time + stateInfo.length; // ch? h?t 1 vòng m?i trigger l?i
             }
         }
 
@@ -244,6 +252,7 @@ public class EnemyAI : MonoBehaviour, IDamageable
 
     void Shoot()
     {
+        audioSource.PlayOneShot(shootSound);
         Vector3 targetPos = (playerMovement?.bodyController != null)
             ? playerMovement.bodyController.transform.position
             : player.position;
@@ -283,11 +292,28 @@ public class EnemyAI : MonoBehaviour, IDamageable
         agent.enabled = false;
         anim.enabled = false;
 
-        // Kích ho?t ragdoll: b? kinematic cho t?t c? rigidbody con
         foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
         {
-            rb.isKinematic = false;
-            rb.useGravity = true;
+            // Log t?t c? collider info c?a bone này
+            foreach (Collider col in rb.GetComponentsInChildren<Collider>())
+            {
+                if (col is CapsuleCollider cap)
+                    Debug.Log($"Bone: {rb.name} | Capsule radius={cap.radius} height={cap.height} scale={rb.transform.lossyScale}");
+                else if (col is BoxCollider box)
+                    Debug.Log($"Bone: {rb.name} | Box size={box.size} scale={rb.transform.lossyScale}");
+                else if (col is SphereCollider sph)
+                    Debug.Log($"Bone: {rb.name} | Sphere radius={sph.radius} scale={rb.transform.lossyScale}");
+            }
+
+            try
+            {
+                rb.isKinematic = false;
+                rb.useGravity = true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"FAILED bone: {rb.name} | {e.Message}");
+            }
         }
     }
 }
