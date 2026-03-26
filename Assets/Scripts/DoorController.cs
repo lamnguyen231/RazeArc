@@ -29,9 +29,9 @@ public class DoorController : MonoBehaviour
     [Header("Key Settings (only used when Door Type = Locked)")]
     public string requiredKey = "Red";
 
-    [Header("Enemy Settings (used by ArenaEntry and ArenaExit door types)")]
-    [Tooltip("Drag every enemy for this room into this list.")]
-    public GameObject[] roomEnemies;
+    [Header("Enemy Settings")]
+    [Tooltip("Drag the parent object containing all the room's enemies into this slot.")]
+    public Transform enemyContainer;
 
     [Header("Close Settings")]
     [Tooltip("When the player leaves the trigger, should the door slide back down?")]
@@ -182,11 +182,16 @@ public class DoorController : MonoBehaviour
 
     private bool AreEnemiesDead()
     {
-        if (roomEnemies == null || roomEnemies.Length == 0) return true;
+        if (enemyContainer == null) return true;
 
-        foreach (GameObject enemy in roomEnemies)
+        if (enemyContainer.childCount == 0) return true;
+
+        foreach (Transform childEnemy in enemyContainer)
         {
-            if (enemy != null) return false;
+            if (childEnemy != null && childEnemy.gameObject.activeInHierarchy)
+            {
+                return false;
+            }
         }
 
         return true;
