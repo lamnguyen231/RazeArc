@@ -18,6 +18,7 @@ public class PlayerInventory : MonoBehaviour, IDamageable
 
     [Header("UI")]
     public TextMeshProUGUI healthText;
+    public InGameUIManager inGameUIManager;
 
     [Header("Keycards")]
     public bool hasRedKey = false;
@@ -41,6 +42,10 @@ public class PlayerInventory : MonoBehaviour, IDamageable
     {
         isDead = false;
         gameFlow = FindFirstObjectByType<GameFlowManager>();
+        if (inGameUIManager == null)
+        {
+            inGameUIManager = FindFirstObjectByType<InGameUIManager>();
+        }
         InitializeDefaultAmmoPools();
         UpdateHealthUI();
     }
@@ -101,6 +106,11 @@ public class PlayerInventory : MonoBehaviour, IDamageable
         if (healthText != null)
         {
             healthText.text = "Health: " + playerHealth;
+        }
+
+        if (inGameUIManager != null)
+        {
+            inGameUIManager.UpdateHealth(playerHealth, playerMaxHealth);
         }
     }
 

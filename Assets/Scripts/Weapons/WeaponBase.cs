@@ -278,7 +278,7 @@ public abstract class WeaponBase : MonoBehaviour
             // <-- THÊM ĐOẠN NÀY ĐỂ HIỂN THỊ ĐẠN LÚC MỚI VÀO GAME
             if (uiManager != null)
             {
-                uiManager.UpdateAmmo(currentAmmo, magazineSize);
+                UpdateAmmoUI();
             }
 
         if (recoilPivot == null)
@@ -309,7 +309,7 @@ public abstract class WeaponBase : MonoBehaviour
         // 2. Ép UI cập nhật ngay lập tức số đạn của súng này
         if (uiManager != null)
         {
-            uiManager.UpdateAmmo(currentAmmo, magazineSize);
+            UpdateAmmoUI();
         }
         if (playerMovement != null && playerMovement.bodyController != null)
         {
@@ -503,7 +503,7 @@ public abstract class WeaponBase : MonoBehaviour
                 // <-- THÊM ĐOẠN NÀY ĐỂ BÁO TỤT ĐẠN KHI BẮN
                 if (uiManager != null)
                 {
-                    uiManager.UpdateAmmo(currentAmmo, magazineSize);
+                    UpdateAmmoUI();
                 }
             }
 
@@ -641,7 +641,7 @@ public abstract class WeaponBase : MonoBehaviour
         // <-- THÊM ĐOẠN NÀY ĐỂ BÁO ĐẦY ĐẠN SAU KHI RELOAD
         if (uiManager != null)
         {
-            uiManager.UpdateAmmo(currentAmmo, magazineSize);
+            UpdateAmmoUI();
         }
 
         ResetReloadState();
@@ -804,6 +804,16 @@ public abstract class WeaponBase : MonoBehaviour
         }
 
         return Mathf.Max(0, reserveAmmo);
+    }
+
+    void UpdateAmmoUI()
+    {
+        if (uiManager == null)
+        {
+            return;
+        }
+
+        uiManager.UpdateAmmo(currentAmmo, GetReserveAmmoCount());
     }
 
     int ConsumeReserveAmmo(int amount)

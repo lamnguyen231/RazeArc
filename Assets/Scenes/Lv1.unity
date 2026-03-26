@@ -57252,6 +57252,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 556810770}
+    - target: {fileID: 1197661231120183889, guid: 9c8f15bd0dfba7e4390967449ead5e85, type: 3}
+      propertyPath: m_VersionIndex
+      value: 276
+      objectReference: {fileID: 0}
     - target: {fileID: 2065280765944012250, guid: 9c8f15bd0dfba7e4390967449ead5e85, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.96
@@ -57316,6 +57320,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 7039787}
+    - target: {fileID: 5355579799339255069, guid: 9c8f15bd0dfba7e4390967449ead5e85, type: 3}
+      propertyPath: m_VersionIndex
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 6974808292766137862, guid: 9c8f15bd0dfba7e4390967449ead5e85, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -57324,6 +57332,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1465552516}
+    - target: {fileID: 7301209804406546207, guid: 9c8f15bd0dfba7e4390967449ead5e85, type: 3}
+      propertyPath: m_VersionIndex
+      value: 1364
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -74949,6 +74961,10 @@ PrefabInstance:
     - target: {fileID: 4916150876834782597, guid: 9082c8328a940404a8d3500392ac7db3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5234373369505724553, guid: 9082c8328a940404a8d3500392ac7db3, type: 3}
+      propertyPath: lowHealthThreshold
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6260128326833886204, guid: 9082c8328a940404a8d3500392ac7db3, type: 3}
       propertyPath: m_SizeDelta.x
