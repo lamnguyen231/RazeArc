@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerInventory : MonoBehaviour, IDamageable
 {
@@ -24,6 +25,11 @@ public class PlayerInventory : MonoBehaviour, IDamageable
     public bool hasRedKey = false;
     public bool hasBlueKey = false;
     public bool hasGreenKey = false;
+
+    [Header("Keycard UI")]
+    public Image redKeycardImage;
+    public Image blueKeycardImage;
+    public Image greenKeycardImage;
 
     [Header("Ammo Reserves")]
     public List<AmmoPool> ammoPools = new List<AmmoPool>();
@@ -48,6 +54,7 @@ public class PlayerInventory : MonoBehaviour, IDamageable
         }
         InitializeDefaultAmmoPools();
         UpdateHealthUI();
+        UpdateKeycardUI();
     }
 
     // Update is called once per frame
@@ -60,6 +67,26 @@ public class PlayerInventory : MonoBehaviour, IDamageable
         if (keyColor == "Red") hasRedKey = true;
         else if (keyColor == "Blue") hasBlueKey = true;
         else if (keyColor == "Green") hasGreenKey = true;
+
+        UpdateKeycardUI();
+    }
+
+    void UpdateKeycardUI()
+    {
+        if (redKeycardImage != null)
+        {
+            redKeycardImage.enabled = hasRedKey;
+        }
+
+        if (blueKeycardImage != null)
+        {
+            blueKeycardImage.enabled = hasBlueKey;
+        }
+
+        if (greenKeycardImage != null)
+        {
+            greenKeycardImage.enabled = hasGreenKey;
+        }
     }
 
     public void TakeDamage(float damageAmount)
@@ -107,7 +134,27 @@ public class PlayerInventory : MonoBehaviour, IDamageable
         AddReserveAmmo(AmmoType.SMG, 30);
         AddReserveAmmo(AmmoType.Shell, 4);
         AddReserveAmmo(AmmoType.Rocket, 1);
+        RefreshActiveWeaponAmmoUI();
         Debug.Log("You picked up an ammo pack!");
+    }
+
+    void RefreshActiveWeaponAmmoUI()
+    {
+        WeaponSwitcher switcher = GetComponentInChildren<WeaponSwitcher>(true);
+        if (switcher == null || switcher.weapons == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < switcher.weapons.Length; i++)
+        {
+            WeaponBase weapon = switcher.weapons[i];
+            if (weapon != null && weapon.gameObject.activeInHierarchy)
+            {
+                weapon.RefreshAmmoUI();
+                return;
+            }
+        }
     }
 
     public void UpdateHealthUI()

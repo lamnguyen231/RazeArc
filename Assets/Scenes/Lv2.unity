@@ -29269,6 +29269,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tipCanvas: {fileID: 893597359}
   inGameHud: {fileID: 1492449277}
+  autoShowOnStart: 1
+  autoShowSceneName: Lv2
 --- !u!1001 &894309126
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37158,14 +37160,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3003998340956236522, guid: 9082c8328a940404a8d3500392ac7db3, type: 3}
-      propertyPath: m_fontSize
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 3003998340956236522, guid: 9082c8328a940404a8d3500392ac7db3, type: 3}
-      propertyPath: m_fontSizeBase
-      value: 24
-      objectReference: {fileID: 0}
     - target: {fileID: 4916150876834782597, guid: 9082c8328a940404a8d3500392ac7db3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -37209,10 +37203,6 @@ PrefabInstance:
     - target: {fileID: 9162723195483701162, guid: 9082c8328a940404a8d3500392ac7db3, type: 3}
       propertyPath: m_Name
       value: '[System]_HUD'
-      objectReference: {fileID: 0}
-    - target: {fileID: 9162723195483701162, guid: 9082c8328a940404a8d3500392ac7db3, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

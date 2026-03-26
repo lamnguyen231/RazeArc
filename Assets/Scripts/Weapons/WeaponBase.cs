@@ -829,6 +829,16 @@ public abstract class WeaponBase : MonoBehaviour
         uiManager.UpdateAmmo(currentAmmo, GetReserveAmmoCount());
     }
 
+    public void RefreshAmmoUI()
+    {
+        if (!usesAmmo)
+        {
+            return;
+        }
+
+        UpdateAmmoUI();
+    }
+
     int ConsumeReserveAmmo(int amount)
     {
         int requested = Mathf.Max(0, amount);
