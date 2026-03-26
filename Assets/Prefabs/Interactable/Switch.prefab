@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8453947382745555836}
   - component: {fileID: 4942560817904817673}
   - component: {fileID: 2934876082162163318}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Switch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -361,6 +361,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   switchAction: 0
   interactKey: 101
+  nextLevelName: 
   doorToOpen: {fileID: 0}
   buttonModel: {fileID: 2031324692866290798}
   pressedMaterial: {fileID: 2100000, guid: 9767695bbf60c6c459c1cbf25a60c6d3, type: 2}

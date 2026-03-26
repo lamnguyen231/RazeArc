@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5276207955566204159}
   - component: {fileID: 8539631760458716351}
   - component: {fileID: 6084879192093796494}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Acid_Hitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -82,7 +82,7 @@ GameObject:
   - component: {fileID: 660847867815313763}
   - component: {fileID: 3002441054493249395}
   - component: {fileID: 5209891129422765236}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Acid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
