@@ -1066,7 +1066,7 @@ MonoBehaviour:
   viewAngle: 180
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
 --- !u!82 &-7637529284584142672
 AudioSource:
   m_ObjectHideFlags: 0

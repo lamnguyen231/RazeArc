@@ -6429,6 +6429,7 @@ MonoBehaviour:
   chaseSpeedMultiplier: 1.5
   damageAmount: 10
   damageCooldown: 2
+  screamSound: {fileID: 0}
   vision: {fileID: 561071872530470684}
   player: {fileID: 0}
   muzzleFlash: {fileID: 1908809022980776962}
@@ -6463,7 +6464,7 @@ MonoBehaviour:
   viewAngle: 180
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
 --- !u!82 &1578943833405832856
 AudioSource:
   m_ObjectHideFlags: 0
