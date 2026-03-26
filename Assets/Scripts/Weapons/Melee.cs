@@ -61,11 +61,7 @@ public class Melee : WeaponBase
                 continue;
             }
 
-            IDamageable damageable =
-                hit.GetComponent<IDamageable>()
-                ?? hit.GetComponentInParent<IDamageable>();
-
-            if (damageable == null)
+            if (!TryGetDamageableFromCollider(hit, out IDamageable damageable))
             {
                 continue;
             }

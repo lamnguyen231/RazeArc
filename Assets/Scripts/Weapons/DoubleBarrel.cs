@@ -89,7 +89,7 @@ public class DoubleBarrel : WeaponBase
                     hitSomething = true;
                 }
 
-                if (hit.collider.TryGetComponent<IDamageable>(out var damageable))
+                if (TryGetDamageableFromCollider(hit.collider, out IDamageable damageable))
                 {
                     damageable.TakeDamage(damage);
                 }

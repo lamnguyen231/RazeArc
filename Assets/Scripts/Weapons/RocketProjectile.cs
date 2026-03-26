@@ -99,6 +99,29 @@ public class RocketProjectile : MonoBehaviour
         Explode();
     }
 
+    static bool TryGetDamageableFromCollider(Collider hitCollider, out IDamageable damageable)
+    {
+        damageable = null;
+
+        if (hitCollider == null)
+        {
+            return false;
+        }
+
+        Transform current = hitCollider.transform;
+        while (current != null)
+        {
+            if (current.TryGetComponent<IDamageable>(out damageable))
+            {
+                return true;
+            }
+
+            current = current.parent;
+        }
+
+        return false;
+    }
+
     void Explode()
     {
         hasExploded = true;
@@ -125,11 +148,7 @@ public class RocketProjectile : MonoBehaviour
             );
 
             // Damage
-            IDamageable damageable =
-                hit.GetComponent<IDamageable>()
-                ?? hit.GetComponentInParent<IDamageable>();
-
-            if (damageable != null && damagedTargets.Add(damageable))
+            if (TryGetDamageableFromCollider(hit, out IDamageable damageable) && damagedTargets.Add(damageable))
             {
                 float finalDamage = damage * falloffMultiplier;
                 if (damageable is PlayerInventory)
