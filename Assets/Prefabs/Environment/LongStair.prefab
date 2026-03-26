@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1170885447446430349}
   - component: {fileID: 937973460750722256}
   - component: {fileID: 8542179400017781457}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LongStair
   m_TagString: Untagged
   m_Icon: {fileID: 0}

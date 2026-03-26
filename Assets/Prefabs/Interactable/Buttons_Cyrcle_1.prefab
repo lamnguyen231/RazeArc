@@ -56,6 +56,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5943861732449413272, guid: 7188e636e0e1ccf44bec5470ad192310, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -4401516710929950653, guid: 7188e636e0e1ccf44bec5470ad192310, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: -940751433667545387, guid: 7188e636e0e1ccf44bec5470ad192310, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -63,6 +71,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 7188e636e0e1ccf44bec5470ad192310, type: 3}
       propertyPath: m_Name
       value: Buttons_Cyrcle_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7188e636e0e1ccf44bec5470ad192310, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1308987167971790318, guid: 7188e636e0e1ccf44bec5470ad192310, type: 3}
       propertyPath: m_Materials.Array.data[0]
