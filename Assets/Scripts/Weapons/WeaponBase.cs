@@ -144,6 +144,8 @@ public abstract class WeaponBase : MonoBehaviour
     public int maxImpactDecals = 120;
     public float impactDecalMinSize = 0.07f;
     public float impactDecalMaxSize = 0.12f;
+    [Min(0.01f)]
+    public float impactDecalHardMaxSize = 0.2f;
     public float impactDecalSurfaceOffset = 0.012f;
     public float impactDecalLifetime = 18f;
     public Color worldImpactDecalColor = new Color(0.45f, 0.45f, 0.45f, 0.9f);
@@ -1181,8 +1183,8 @@ public abstract class WeaponBase : MonoBehaviour
         pooledDecal.transform.rotation = Quaternion.LookRotation(-hit.normal);
         pooledDecal.transform.Rotate(Vector3.forward, Random.Range(0f, 360f), Space.Self);
 
-        float decalSize = Random.Range(impactDecalMinSize, impactDecalMaxSize);
-        pooledDecal.transform.localScale = new Vector3(decalSize, decalSize, decalSize);
+        float decalSize = GetSafeImpactDecalWorldSize();
+        pooledDecal.transform.localScale = GetDecalLocalScaleForParent(pooledDecal.transform.parent, decalSize);
 
         if (pooledDecal.renderer != null)
         {
@@ -1201,6 +1203,63 @@ public abstract class WeaponBase : MonoBehaviour
         pooledDecal.gameObject.SetActive(true);
         pooledDecal.despawnTime = Time.time + Mathf.Max(0.2f, impactDecalLifetime);
         impactDecalPool[decalIndex] = pooledDecal;
+    }
+
+    float GetSafeImpactDecalWorldSize()
+    {
+        float minConfigured = impactDecalMinSize;
+        float maxConfigured = impactDecalMaxSize;
+
+        if (float.IsNaN(minConfigured) || float.IsInfinity(minConfigured))
+        {
+            minConfigured = 0.07f;
+        }
+
+        if (float.IsNaN(maxConfigured) || float.IsInfinity(maxConfigured))
+        {
+            maxConfigured = 0.12f;
+        }
+
+        float minSize = Mathf.Max(0.001f, Mathf.Min(minConfigured, maxConfigured));
+        float maxSize = Mathf.Max(minSize, Mathf.Max(minConfigured, maxConfigured));
+
+        float hardMax = impactDecalHardMaxSize;
+        if (float.IsNaN(hardMax) || float.IsInfinity(hardMax))
+        {
+            hardMax = 0.2f;
+        }
+
+        hardMax = Mathf.Max(0.01f, hardMax);
+        maxSize = Mathf.Min(maxSize, hardMax);
+        minSize = Mathf.Min(minSize, maxSize);
+
+        return Random.Range(minSize, maxSize);
+    }
+
+    Vector3 GetDecalLocalScaleForParent(Transform parent, float desiredWorldSize)
+    {
+        if (parent == null)
+        {
+            return new Vector3(desiredWorldSize, desiredWorldSize, desiredWorldSize);
+        }
+
+        Vector3 parentScale = parent.lossyScale;
+        float safeX = Mathf.Max(0.0001f, Mathf.Abs(parentScale.x));
+        float safeY = Mathf.Max(0.0001f, Mathf.Abs(parentScale.y));
+        float safeZ = Mathf.Max(0.0001f, Mathf.Abs(parentScale.z));
+
+        Vector3 localScale = new Vector3(
+            desiredWorldSize / safeX,
+            desiredWorldSize / safeY,
+            desiredWorldSize / safeZ
+        );
+
+        float maxLocalScale = Mathf.Max(1f, impactDecalHardMaxSize * 100f);
+        localScale.x = Mathf.Clamp(localScale.x, -maxLocalScale, maxLocalScale);
+        localScale.y = Mathf.Clamp(localScale.y, -maxLocalScale, maxLocalScale);
+        localScale.z = Mathf.Clamp(localScale.z, -maxLocalScale, maxLocalScale);
+
+        return localScale;
     }
 
     void UpdateImpactDecalPool()
@@ -1336,6 +1395,29 @@ public abstract class WeaponBase : MonoBehaviour
         impactDecalPool[index] = pooledDecal;
     }
 
+    protected bool TryGetDamageableFromCollider(Collider hitCollider, out IDamageable damageable)
+    {
+        damageable = null;
+
+        if (hitCollider == null)
+        {
+            return false;
+        }
+
+        Transform current = hitCollider.transform;
+        while (current != null)
+        {
+            if (current.TryGetComponent<IDamageable>(out damageable))
+            {
+                return true;
+            }
+
+            current = current.parent;
+        }
+
+        return false;
+    }
+
     bool IsEnemyHit(RaycastHit hit)
     {
         if (hit.collider == null)
@@ -1348,11 +1430,7 @@ public abstract class WeaponBase : MonoBehaviour
             return true;
         }
 
-        IDamageable damageable =
-            hit.collider.GetComponent<IDamageable>()
-            ?? hit.collider.GetComponentInParent<IDamageable>();
-
-        if (damageable == null)
+        if (!TryGetDamageableFromCollider(hit.collider, out IDamageable damageable))
         {
             return false;
         }

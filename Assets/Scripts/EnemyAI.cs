@@ -21,6 +21,8 @@ public class EnemyAI : MonoBehaviour, IDamageable
     public float screamDuration = 2f;
     public float attackRange = 5f;
     public float chaseSpeedMultiplier = 1.5f;
+    public float damageAmount = 10f;
+    public float damageCooldown = 2f;
 
     [Header("References")]
     public EnemyVision vision;
@@ -190,8 +192,8 @@ public class EnemyAI : MonoBehaviour, IDamageable
             if (Time.time >= nextFireTime)
             {
                 Debug.Log("Enemy attacks the player with melee!");
-                player.GetComponent<IDamageable>()?.TakeDamage(10f);
-                nextFireTime = Time.time + 1f / fireRate;
+                player.GetComponent<IDamageable>()?.TakeDamage(damageAmount);
+                nextFireTime = Time.time + damageCooldown;
             }
         }
 
@@ -256,7 +258,7 @@ public class EnemyAI : MonoBehaviour, IDamageable
             {
                 Debug.Log("Enemy hit the player!");
                 if (hit.collider.TryGetComponent<IDamageable>(out var dmg))
-                    dmg.TakeDamage(10f);
+                    dmg.TakeDamage(damageAmount);
             }
         }
     }
