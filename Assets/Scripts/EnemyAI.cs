@@ -44,7 +44,9 @@ public class EnemyAI : MonoBehaviour, IDamageable
     private NavMeshAgent agent;
     private Animator anim;
     private PlayerMovement playerMovement;
-    private AudioSource audioSource;
+    private AudioSource audioSourceScream;
+    private AudioSource audioSourceShoot;
+    private AudioSource audioSourceAttack;
 
     private float idleTimer;
     private float screamTimer;
@@ -59,7 +61,10 @@ public class EnemyAI : MonoBehaviour, IDamageable
     {
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
+        //audioSource = GetComponent<AudioSource>();
+        audioSourceScream = gameObject.AddComponent<AudioSource>();
+        audioSourceShoot = gameObject.AddComponent<AudioSource>();
+        audioSourceAttack = gameObject.AddComponent<AudioSource>();
         baseSpeed = agent.speed;
 
         // T�m PlayerMovement ?? aim ch�nh x�c h?n
@@ -137,7 +142,7 @@ public class EnemyAI : MonoBehaviour, IDamageable
     {
         agent.isStopped = true;
         LookAtPlayer();
-        audioSource.PlayOneShot(screamSound);
+        audioSourceScream.PlayOneShot(screamSound);
         screamTimer += Time.deltaTime;
         if (screamTimer >= screamDuration)
         {
@@ -199,7 +204,7 @@ public class EnemyAI : MonoBehaviour, IDamageable
             if (normalizedTime >= 0.5f && Time.time >= nextFireTime)
             {
                 Debug.Log("Enemy attacks the player with melee!");
-                audioSource.PlayOneShot(shootSound);
+                audioSourceAttack.PlayOneShot(shootSound);
                 player.GetComponent<IDamageable>()?.TakeDamage(damageAmount);
                 nextFireTime = Time.time + stateInfo.length; // ch? h?t 1 v�ng m?i trigger l?i
             }
@@ -252,7 +257,7 @@ public class EnemyAI : MonoBehaviour, IDamageable
 
     void Shoot()
     {
-        audioSource.PlayOneShot(shootSound);
+        audioSourceShoot.PlayOneShot(shootSound);
         Vector3 targetPos = (playerMovement?.bodyController != null)
             ? playerMovement.bodyController.transform.position
             : player.position;
@@ -308,6 +313,13 @@ public class EnemyAI : MonoBehaviour, IDamageable
     {
         agent.enabled = false;
         anim.enabled = false;
+
+        //SuicideEnemy suicideEnemy = GetComponent<SuicideEnemy>();
+
+        //if(suicideEnemy != null)
+        //{
+        //    suicideEnemy.enabled = false;
+        //}
 
         foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
         {
