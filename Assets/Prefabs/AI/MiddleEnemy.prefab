@@ -1073,10 +1073,10 @@ MonoBehaviour:
   idleDuration: 3
   screamDuration: 2
   attackRange: 0
-  chaseSpeedMultiplier: 1.5
+  chaseSpeedMultiplier: 2.5
   damageAmount: 10
   damageCooldown: 1
-  screamSound: {fileID: 0}
+  screamSound: {fileID: 8300000, guid: 084906825e3a8104ea5c640404194964, type: 3}
   vision: {fileID: 2225740400434464241}
   player: {fileID: 0}
   muzzleFlash: {fileID: 0}
@@ -1085,7 +1085,7 @@ MonoBehaviour:
   shootMask:
     serializedVersion: 2
     m_Bits: 320
-  shootSound: {fileID: 0}
+  shootSound: {fileID: 8300000, guid: 58eae5b60faffe34796cfe58687b6f2a, type: 3}
   waypoints: []
 --- !u!114 &2225740400434464241
 MonoBehaviour:

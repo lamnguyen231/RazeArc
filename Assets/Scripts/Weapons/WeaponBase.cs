@@ -287,11 +287,11 @@ public abstract class WeaponBase : MonoBehaviour
         }
 
         // Get or create AudioSource
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
+        //audioSource = GetComponent<AudioSource>();
+        //if (audioSource == null)
+        //{
             audioSource = gameObject.AddComponent<AudioSource>();
-        }
+        //}
         audioSource.playOnAwake = false;
 
         CacheOriginalPose();
