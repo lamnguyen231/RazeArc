@@ -67,9 +67,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doorMesh: {fileID: 3356721069856266363}
+  doorSound: {fileID: 8300000, guid: ccf34c467fb0c0b409f0ad3f77f8d485, type: 3}
   doorType: 0
   requiredKey: None
-  roomEnemies: []
+  enemyContainer: {fileID: 0}
   autoClose: 1
   slideHeight: 5
   slideSpeed: 5

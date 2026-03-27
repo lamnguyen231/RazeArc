@@ -141,7 +141,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc63ec151f9f8c549b16e48806cb63cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainMenuMusic: {fileID: 8300000, guid: 307060f4a48fb454abbb8a8e565eb08a, type: 3}
-  level1Music: {fileID: 8300000, guid: b5a14f16225149e478c93769567d44cd, type: 3}
-  level2Music: {fileID: 8300000, guid: 9120c04a7ad07874c979e386d21cd15c, type: 3}
-  level3Music: {fileID: 8300000, guid: a334ecd77f4162f4b9f3a65150a62e8b, type: 3}
+  level1Music: {fileID: 8300000, guid: 2ac814d6cae482f40bd0730798bbbccf, type: 3}
+  level2Music: {fileID: 8300000, guid: 5b87e4d651e420545b1bb987b4072b43, type: 3}
+  level3Music: {fileID: 8300000, guid: 6461d468625d3264cbb1e3a03da4d40e, type: 3}

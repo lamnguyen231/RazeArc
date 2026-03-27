@@ -22,6 +22,9 @@ public class DoorController : MonoBehaviour
     [Header("Door Object")]
     public GameObject doorMesh;
 
+    [Header("Door SFX")]
+    public AudioClip doorSound;
+
     [Header("Door Type")]
     public DoorType doorType = DoorType.Free;
 
@@ -43,6 +46,7 @@ public class DoorController : MonoBehaviour
     private Vector3 startPosition;
     private Vector3 targetPosition;
     private bool isLockedInArena = false;
+    private AudioSource audioSource;
 
     private void Start()
     {
@@ -53,6 +57,10 @@ public class DoorController : MonoBehaviour
         }
 
         startPosition = doorMesh.transform.position;
+
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1f; 
+        audioSource.playOnAwake = false;
     }
 
     public void OnTriggerEnter(Collider other)
@@ -198,6 +206,7 @@ public class DoorController : MonoBehaviour
         if (doorMesh == null) return;
         targetPosition = startPosition + new Vector3(0, slideHeight, 0);
         state = DoorState.Opening;
+        if (doorSound != null) audioSource.PlayOneShot(doorSound);
     }
 
     private void CloseDoor()
@@ -205,5 +214,6 @@ public class DoorController : MonoBehaviour
         if (doorMesh == null) return;
         targetPosition = startPosition;
         state = DoorState.Closing;
+        if (doorSound != null) audioSource.PlayOneShot(doorSound);
     }
 }
