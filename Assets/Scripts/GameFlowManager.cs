@@ -106,4 +106,10 @@ public class GameFlowManager : MonoBehaviour
             tipScreen.DisplayTip();
         }
     }
+
+    public void GoMainMenu()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("Demo1");
+    }
 }
