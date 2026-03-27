@@ -40,6 +40,8 @@ public class EnemyAI : MonoBehaviour, IDamageable
     [Header("Waypoints")]
     public List<Transform> waypoints;
 
+    public bool isDead = false;
+
     // ??? Private ?????????????????????????????????????????????
     private NavMeshAgent agent;
     private Animator anim;
@@ -311,6 +313,7 @@ public class EnemyAI : MonoBehaviour, IDamageable
 
     void HandleDefeated()
     {
+        isDead = true;
         agent.enabled = false;
         anim.enabled = false;
 

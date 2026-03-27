@@ -20,7 +20,6 @@ public class DoorController : MonoBehaviour
     }
 
     [Header("Door Object")]
-    [Tooltip("The mesh/GameObject that physically moves when the door opens.")]
     public GameObject doorMesh;
 
     [Header("Door Type")]
@@ -34,7 +33,6 @@ public class DoorController : MonoBehaviour
     public Transform enemyContainer;
 
     [Header("Close Settings")]
-    [Tooltip("When the player leaves the trigger, should the door slide back down?")]
     public bool autoClose = true;
 
     [Header("Animation Settings")]
@@ -60,7 +58,6 @@ public class DoorController : MonoBehaviour
     public void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
-
         CheckDoorConditions(other.gameObject);
     }
 
@@ -72,13 +69,12 @@ public class DoorController : MonoBehaviour
         {
             isLockedInArena = true;
             CloseDoor();
+            StartCoroutine(ScanForDefeatedEnemies());
             return;
         }
 
         if (autoClose)
-        {
             CloseDoor();
-        }
     }
 
     private void Update()
@@ -92,10 +88,17 @@ public class DoorController : MonoBehaviour
             );
 
             if (doorMesh.transform.position == targetPosition)
-            {
                 state = DoorState.Idle;
-            }
         }
+    }
+
+    private IEnumerator ScanForDefeatedEnemies()
+    {
+        while (!AreEnemiesDead())
+            yield return new WaitForSeconds(0.5f);
+
+        isLockedInArena = false;
+        OpenDoor();
     }
 
     private void CheckDoorConditions(GameObject player)
@@ -159,39 +162,32 @@ public class DoorController : MonoBehaviour
         };
 
         if (hasKey)
-        {
             OpenDoor();
-        }
         else
-        {
             Debug.Log($"[DoorController] Door locked: you need the {requiredKey} key!");
-        }
     }
 
     private void HandleRoomClearedDoorEntry()
     {
         if (AreEnemiesDead())
-        {
             OpenDoor();
-        }
         else
-        {
             Debug.Log("[DoorController] Door locked: clear the room first!");
-        }
     }
 
     private bool AreEnemiesDead()
     {
         if (enemyContainer == null) return true;
-
         if (enemyContainer.childCount == 0) return true;
 
         foreach (Transform childEnemy in enemyContainer)
         {
-            if (childEnemy != null && childEnemy.gameObject.activeInHierarchy)
-            {
+            if (childEnemy == null) continue;
+
+            EnemyAI enemy = childEnemy.GetComponent<EnemyAI>();
+
+            if (enemy != null && !enemy.isDead)
                 return false;
-            }
         }
 
         return true;
@@ -200,7 +196,6 @@ public class DoorController : MonoBehaviour
     private void OpenDoor()
     {
         if (doorMesh == null) return;
-
         targetPosition = startPosition + new Vector3(0, slideHeight, 0);
         state = DoorState.Opening;
     }
@@ -208,21 +203,7 @@ public class DoorController : MonoBehaviour
     private void CloseDoor()
     {
         if (doorMesh == null) return;
-
         targetPosition = startPosition;
         state = DoorState.Closing;
-    }
-
-    public void NotifyEnemyDied()
-    {
-        if ((doorType == DoorType.ArenaEntry && isLockedInArena) ||
-             doorType == DoorType.ArenaExit)
-        {
-            if (AreEnemiesDead())
-            {
-                isLockedInArena = false;
-                OpenDoor();
-            }
-        }
     }
 }
