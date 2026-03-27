@@ -176,6 +176,7 @@ GameObject:
   m_Component:
   - component: {fileID: 943119073569271518}
   - component: {fileID: 7914777423864953862}
+  - component: {fileID: 1340596962399852752}
   m_Layer: 0
   m_Name: SMG
   m_TagString: Untagged
@@ -232,18 +233,53 @@ MonoBehaviour:
   reloadTime: 1.5
   recoilMin: {x: -0.5, y: -20, z: 0}
   recoilMax: {x: 0.5, y: -30, z: 0}
+  crouchAccuracyMultiplier: 0.5
+  crouchRecoilMultiplier: 0.4
   motionType: 0
   kickbackAmount: 0.15
   kickbackRecoverySpeed: 8
+  kickReturnDuration: 0.12
+  kickReturnExponent: 2.2
   recoilPivot: {fileID: 0}
   recoilKickAngle: 3.5
   maxRecoilAngle: 12
   recoilAngleRecoverySpeed: 16
+  fovKickAmount: 0.35
+  useMovementBob: 1
+  bobFrequency: 9
+  bobSmoothing: 14
+  bobPositionAmplitude: {x: 0.012, y: 0.016, z: 0.01}
+  bobRotationAmplitude: {x: 1.4, y: 0.7, z: 1.6}
+  aimBobMultiplier: 0.35
+  firingBobMultiplier: 0.2
+  reloadBobMultiplier: 0.08
+  firingBobSuppressDuration: 0.08
+  useAirborneMotion: 1
+  airborneBlendSpeed: 8
+  jumpPositionOffset: {x: 0, y: -0.018, z: -0.03}
+  jumpEulerOffset: {x: -5, y: 0, z: 1.25}
+  fallPositionOffset: {x: 0, y: 0.02, z: 0.045}
+  fallEulerOffset: {x: 8, y: 0, z: -2.25}
+  airborneSwayFrequency: 4.8
+  airborneSwayPosAmplitude: 0.004
+  airborneSwayRollAmplitude: 1.3
+  airborneSwayYawAmplitude: 0.65
+  useLandingPunch: 1
+  landingMinImpactSpeed: 4
+  landingMaxImpactSpeed: 14
+  landingPunchPositionOffset: {x: 0, y: -0.045, z: 0.02}
+  landingPunchEulerOffset: {x: 7.5, y: 0, z: 2.6}
+  landingPunchDuration: 0.16
+  landingPunchExponent: 2.4
   useReloadAnimation: 1
   reloadTiltEuler: {x: 28, y: 0, z: 0}
   reloadPositionOffset: {x: 0, y: -0.05, z: -0.08}
   reloadLowerFraction: 0.22
   reloadRaiseFraction: 0.24
+  useReloadMovementBob: 1
+  reloadBobFrequency: 8
+  reloadBobPositionAmplitude: {x: 0.006, y: 0.009, z: 0.004}
+  reloadBobRotationAmplitude: {x: 0.9, y: 0.45, z: 0.9}
   useTracer: 1
   tracerEveryNthShot: 1
   tracerDuration: 0.08
@@ -262,6 +298,23 @@ MonoBehaviour:
   muzzleFlashLightIntensity: 7
   muzzleFlashLightRange: 4
   muzzleFlashLightDuration: 0.09
+  fireScreenShakeAmount: 0.08
+  fireScreenShakeDuration: 0.06
+  fireClip: {fileID: 0}
+  reloadClip: {fileID: 0}
+  equipClip: {fileID: 0}
+  fireVolume: 0.8
+  reloadVolume: 0.6
+  equipVolume: 0.7
+  useImpactDecals: 1
+  maxImpactDecals: 120
+  impactDecalMinSize: 0.07
+  impactDecalMaxSize: 0.12
+  impactDecalHardMaxSize: 0.2
+  impactDecalSurfaceOffset: 0.012
+  impactDecalLifetime: 18
+  worldImpactDecalColor: {r: 0.45, g: 0.45, b: 0.45, a: 0.9}
+  enemyImpactDecalColor: {r: 0.75, g: 0.08, b: 0.08, a: 0.95}
   swingAngle: 60
   swingSpeed: 12
   meleeWindupEuler: {x: 0, y: 0, z: 25}
@@ -270,12 +323,41 @@ MonoBehaviour:
   meleeAttackTime: 0.06
   meleeRecoverTime: 0.14
   meleeLungeDistance: 0.18
+  useEquipAnimation: 1
+  equipStartOffset: {x: 0, y: -0.35, z: 0}
+  equipRiseDuration: 0.22
   firePoint: {fileID: 322433814194552605}
   cameraRecoil: {fileID: 0}
+  uiManager: {fileID: 0}
   muzzleLocalOffset: {x: 0, y: 0, z: 0.2}
   shootMask:
     serializedVersion: 2
     m_Bits: 384
+  baseSpread: 0.75
+  maxSpread: 5.25
+  spreadIncreasePerShot: 0.45
+  spreadRecoverPerSecond: 3.8
+--- !u!65 &1340596962399852752
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1801588107902640910}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3239958700376091092
 GameObject:
   m_ObjectHideFlags: 0

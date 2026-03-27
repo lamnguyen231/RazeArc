@@ -23200,6 +23200,10 @@ PrefabInstance:
       propertyPath: waypoints.Array.data[2]
       value: 
       objectReference: {fileID: 87927228}
+    - target: {fileID: 3145541488879406389, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
+      propertyPath: viewAngle
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 4614444301004132047, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
       propertyPath: m_LocalPosition.x
       value: -16.44
@@ -36044,6 +36048,10 @@ PrefabInstance:
       propertyPath: waypoints.Array.data[2]
       value: 
       objectReference: {fileID: 1599810128}
+    - target: {fileID: 3145541488879406389, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
+      propertyPath: viewAngle
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 4614444301004132047, guid: 6d368562cc885a3408b3d69a66d9c844, type: 3}
       propertyPath: m_LocalPosition.x
       value: -13.05
@@ -38888,6 +38896,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 875623668}
     m_Modifications:
+    - target: {fileID: 2225740400434464241, guid: 563c9ebd2c29c9e44b77e101efeb90e9, type: 3}
+      propertyPath: viewAngle
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 3491419260333487157, guid: 563c9ebd2c29c9e44b77e101efeb90e9, type: 3}
       propertyPath: player
       value: 
@@ -44007,6 +44019,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 875623668}
     m_Modifications:
     - target: {fileID: 561071872530470684, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
+      propertyPath: viewAngle
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 561071872530470684, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
       propertyPath: viewDistance
       value: 70
       objectReference: {fileID: 0}
@@ -47029,6 +47045,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 875623668}
     m_Modifications:
+    - target: {fileID: 2225740400434464241, guid: 563c9ebd2c29c9e44b77e101efeb90e9, type: 3}
+      propertyPath: viewAngle
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 3491419260333487157, guid: 563c9ebd2c29c9e44b77e101efeb90e9, type: 3}
       propertyPath: player
       value: 
@@ -49423,6 +49443,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 875623668}
     m_Modifications:
+    - target: {fileID: 561071872530470684, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
+      propertyPath: viewAngle
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 561071872530470684, guid: f753a1abd1e0a4c48adaac06f4a13f29, type: 3}
       propertyPath: viewDistance
       value: 75

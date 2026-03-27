@@ -22,31 +22,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 81bb9eea30387e442899949a80011e55, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 81bb9eea30387e442899949a80011e55, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 81bb9eea30387e442899949a80011e55, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 81bb9eea30387e442899949a80011e55, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.118644
+      value: 8.271287
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 81bb9eea30387e442899949a80011e55, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.452
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 81bb9eea30387e442899949a80011e55, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 9.2134495
+      value: 4.9172363
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 81bb9eea30387e442899949a80011e55, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.98765653
+      value: 0.9876566
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 81bb9eea30387e442899949a80011e55, type: 3}
       propertyPath: m_LocalRotation.x
@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 81bb9eea30387e442899949a80011e55, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.15663506
+      value: -0.15663508
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 81bb9eea30387e442899949a80011e55, type: 3}
       propertyPath: m_LocalRotation.z
@@ -1015,11 +1015,28 @@ MonoBehaviour:
   screamDuration: 2
   attackRange: 2
   chaseSpeedMultiplier: 1.5
-  damageAmount: 10
+  damageAmount: 7
   damageCooldown: 2
   screamSound: {fileID: 8300000, guid: 084906825e3a8104ea5c640404194964, type: 3}
   vision: {fileID: 3145541488879406389}
   player: {fileID: 0}
+  enableWeaponDrop: 1
+  weaponDropChance: 0.85
+  weaponDropDespawnSeconds: 60
+  weaponDropSpawnHeightOffset: 0.45
+  weaponDropEntries:
+  - weaponIndex: 0
+    pickupPrefab: {fileID: 8351068125025464563, guid: d7b6b8fc517c7774a9fee75effb4d747, type: 3}
+    duplicateAmmoAmountOverride: -1
+  - weaponIndex: 1
+    pickupPrefab: {fileID: 7051261528418378666, guid: 03ee574293bec1f469f911ed4ff41d12, type: 3}
+    duplicateAmmoAmountOverride: -1
+  - weaponIndex: 2
+    pickupPrefab: {fileID: 8748812973030076397, guid: 8c2d5ab2b12c33041949b695f8f70bce, type: 3}
+    duplicateAmmoAmountOverride: -1
+  - weaponIndex: 3
+    pickupPrefab: {fileID: 1801588107902640910, guid: c21cca2b074834b47b825d124353ef9f, type: 3}
+    duplicateAmmoAmountOverride: -1
   muzzleFlash: {fileID: 0}
   gunMuzzle: {fileID: 0}
   fireRate: 1
@@ -1027,7 +1044,18 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 320
   shootSound: {fileID: 8300000, guid: 58eae5b60faffe34796cfe58687b6f2a, type: 3}
-  waypoints: []
+  waypoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  isDead: 0
 --- !u!195 &5216675837761638273
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1064,6 +1092,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewDistance: 18.14
   viewAngle: 180
+  viewAngleVertical: 45
   obstacleMask:
     serializedVersion: 2
     m_Bits: 256

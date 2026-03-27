@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class WeaponSwitcher : MonoBehaviour
 {
+    public event Action<WeaponBase, int> WeaponSelected;
+
     [Header("Weapon List (Order Matters)")]
     public WeaponBase[] weapons;
 
@@ -11,6 +14,67 @@ public class WeaponSwitcher : MonoBehaviour
     public bool[] weaponUnlocked;
 
     int currentWeaponIndex = 0;
+
+    public WeaponBase CurrentWeapon
+    {
+        get
+        {
+            if (weapons == null || weapons.Length == 0)
+            {
+                return null;
+            }
+
+            if (currentWeaponIndex < 0 || currentWeaponIndex >= weapons.Length)
+            {
+                return null;
+            }
+
+            return weapons[currentWeaponIndex];
+        }
+    }
+
+    public bool IsWeaponUnlocked(int index)
+    {
+        if (weaponUnlocked == null)
+        {
+            return false;
+        }
+
+        if (index < 0 || index >= weaponUnlocked.Length)
+        {
+            return false;
+        }
+
+        return weaponUnlocked[index];
+    }
+
+    public bool SelectWeaponByIndex(int index)
+    {
+        if (weapons == null || index < 0 || index >= weapons.Length)
+        {
+            return false;
+        }
+
+        if (!IsWeaponUnlocked(index))
+        {
+            return false;
+        }
+
+        SelectWeapon(index);
+        return true;
+    }
+
+    public bool UnlockAndSelectWeapon(int index)
+    {
+        if (weapons == null || index < 0 || index >= weapons.Length)
+        {
+            return false;
+        }
+
+        UnlockWeapon(index);
+        SelectWeapon(index);
+        return true;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -98,6 +162,11 @@ public class WeaponSwitcher : MonoBehaviour
         for (int i = 0; i < weapons.Length; i++)
         {
             weapons[i].gameObject.SetActive(i == index);
+        }
+
+        if (index >= 0 && index < weapons.Length)
+        {
+            WeaponSelected?.Invoke(weapons[index], index);
         }
     }
 

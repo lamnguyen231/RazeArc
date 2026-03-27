@@ -1,9 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public abstract class WeaponBase : MonoBehaviour
 {
+    public event Action<WeaponBase> Fired;
+    public event Action<WeaponBase> ReloadStarted;
+    public event Action<WeaponBase> ReloadFinished;
+
+    public bool IsReloading => isReloading;
+    public bool IsEquipping => isEquipping;
+    public WeaponMotionType MotionKind => motionType;
+    public float ReloadProgressNormalized => isReloading
+        ? Mathf.Clamp01(reloadElapsed / Mathf.Max(0.01f, reloadTime))
+        : 0f;
+
     enum ReloadTriggerType
     {
         None,
@@ -573,6 +586,7 @@ public abstract class WeaponBase : MonoBehaviour
 
 
             Fire();
+            Fired?.Invoke(this);
 
             if (usesAmmo && currentAmmo <= 0)
             {
@@ -613,6 +627,7 @@ public abstract class WeaponBase : MonoBehaviour
         reloadTriggerType = triggerType;
         ClearFireKickState();
         PlayReloadSound();
+        ReloadStarted?.Invoke(this);
 
         if (motionType == WeaponMotionType.Gun && useReloadAnimation)
         {
@@ -886,6 +901,7 @@ public abstract class WeaponBase : MonoBehaviour
 
     void ResetReloadState()
     {
+        bool wasReloading = isReloading;
         isReloading = false;
         if (uiManager != null)
         {
@@ -895,6 +911,11 @@ public abstract class WeaponBase : MonoBehaviour
         reloadElapsed = 0f;
         reloadTriggerType = ReloadTriggerType.None;
         ResetWeaponPoseAfterReloadStop();
+
+        if (wasReloading)
+        {
+            ReloadFinished?.Invoke(this);
+        }
     }
 
     void ResetWeaponPoseAfterReloadStop()

@@ -1,9 +1,18 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
+using TMPro;
 
 public class EnemyAI : MonoBehaviour, IDamageable
 {
+    [System.Serializable]
+    public class WeaponDropEntry
+    {
+        public int weaponIndex = -1;
+        public GameObject pickupPrefab;
+        public int duplicateAmmoAmountOverride = -1;
+    }
+
     public enum EnemyState
     {
         Idle,
@@ -28,6 +37,14 @@ public class EnemyAI : MonoBehaviour, IDamageable
     [Header("References")]
     public EnemyVision vision;
     public Transform player;
+
+    [Header("Weapon Drop")]
+    public bool enableWeaponDrop = true;
+    [Range(0f, 1f)]
+    public float weaponDropChance = 0.85f;
+    public float weaponDropDespawnSeconds = 60f;
+    public float weaponDropSpawnHeightOffset = 0.45f;
+    public List<WeaponDropEntry> weaponDropEntries = new List<WeaponDropEntry>();
 
     [Header("Gun (Optional)")]
     public ParticleSystem muzzleFlash;
@@ -325,6 +342,21 @@ public class EnemyAI : MonoBehaviour, IDamageable
         agent.enabled = false;
         anim.enabled = false;
 
+        PlayerInventory playerInventory = player.GetComponentInParent<PlayerInventory>();
+        if (playerInventory != null)
+        {
+            playerInventory.numberKilled += 1;
+            GameObject killTextObject = GameObject.Find("NumberKilledText");
+            TMP_Text killText = killTextObject != null ? killTextObject.GetComponent<TMP_Text>() : null;
+            if (killText != null)
+            {
+                killText.text = $"Kills: {playerInventory.numberKilled}";
+            }
+            Debug.Log($"Enemy defeated! Total kills: {playerInventory.numberKilled}");
+        }
+
+        TrySpawnWeaponDrop();
+        
         //SuicideEnemy suicideEnemy = GetComponent<SuicideEnemy>();
 
         //if(suicideEnemy != null)
@@ -355,5 +387,104 @@ public class EnemyAI : MonoBehaviour, IDamageable
                 Debug.LogWarning($"FAILED bone: {rb.name} | {e.Message}");
             }
         }
+    }
+
+    void TrySpawnWeaponDrop()
+    {
+        if (!enableWeaponDrop)
+        {
+            return;
+        }
+
+        if (Random.value > Mathf.Clamp01(weaponDropChance))
+        {
+            return;
+        }
+
+        WeaponSwitcher switcher = null;
+        if (player != null)
+        {
+            switcher = player.GetComponentInParent<WeaponSwitcher>();
+            if (switcher == null)
+            {
+                switcher = player.GetComponentInChildren<WeaponSwitcher>(true);
+            }
+        }
+
+        if (switcher == null)
+        {
+            switcher = FindObjectOfType<WeaponSwitcher>();
+        }
+
+        if (switcher == null || switcher.weapons == null || switcher.weapons.Length <= 0)
+        {
+            return;
+        }
+
+        List<int> candidateWeaponIndices = new List<int>();
+        for (int i = 0; i < switcher.weapons.Length; i++)
+        {
+            WeaponBase weapon = switcher.weapons[i];
+            if (weapon == null)
+            {
+                continue;
+            }
+
+            if (weapon.motionType == WeaponMotionType.Melee)
+            {
+                continue;
+            }
+
+            WeaponDropEntry entry = GetDropEntryForIndex(i);
+            if (entry == null || entry.pickupPrefab == null)
+            {
+                continue;
+            }
+
+            candidateWeaponIndices.Add(i);
+        }
+
+        if (candidateWeaponIndices.Count == 0)
+        {
+            return;
+        }
+
+        int randomListIndex = Random.Range(0, candidateWeaponIndices.Count);
+        int selectedWeaponIndex = candidateWeaponIndices[randomListIndex];
+        WeaponDropEntry selectedEntry = GetDropEntryForIndex(selectedWeaponIndex);
+        if (selectedEntry == null || selectedEntry.pickupPrefab == null)
+        {
+            return;
+        }
+
+        WeaponBase selectedWeapon = switcher.weapons[selectedWeaponIndex];
+        Vector3 spawnPosition = transform.position + Vector3.up * weaponDropSpawnHeightOffset;
+        Quaternion spawnRotation = Quaternion.identity;
+
+        GameObject spawnedPickup = Instantiate(selectedEntry.pickupPrefab, spawnPosition, spawnRotation);
+
+        WeaponDropPickup dropPickup = spawnedPickup.GetComponent<WeaponDropPickup>();
+        if (dropPickup == null)
+        {
+            dropPickup = spawnedPickup.AddComponent<WeaponDropPickup>();
+        }
+
+        dropPickup.weaponIndex = selectedWeaponIndex;
+        dropPickup.ammoType = selectedWeapon.ammoType;
+        dropPickup.duplicateAmmoAmountOverride = selectedEntry.duplicateAmmoAmountOverride;
+        dropPickup.despawnSeconds = Mathf.Max(0f, weaponDropDespawnSeconds);
+    }
+
+    WeaponDropEntry GetDropEntryForIndex(int weaponIndex)
+    {
+        for (int i = 0; i < weaponDropEntries.Count; i++)
+        {
+            if (weaponDropEntries[i].weaponIndex == weaponIndex)
+            {
+                return weaponDropEntries[i];
+            }
+        }
+
+        return null;
     }
 }

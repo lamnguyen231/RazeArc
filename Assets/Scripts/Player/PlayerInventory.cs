@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class PlayerInventory : MonoBehaviour, IDamageable
 {
+    public float numberKilled = 0;
+
     [System.Serializable]
     public class AmmoPool
     {
